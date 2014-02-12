@@ -1,6 +1,4 @@
 #include "TcpReader.h"
-
-//#include <EthernetClient.h>
 #include "spark_wiring_tcpclient.h"
 #include "spark_wiring_usbserial.h"
 
@@ -21,12 +19,7 @@ int TcpReader::readPayloadLength()
   char lengthBuffer[7];
   readBlocked( lengthBuffer, 6 );
   lengthBuffer[6] = 0;
-
   int length = atoi( lengthBuffer );
-
-  Serial.print("payload length: ");
-  Serial.println(length);
-
   return length;
 }
 

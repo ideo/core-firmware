@@ -1,6 +1,5 @@
 #include "DebugUtil.h"
 #include "MessageSender.h"
-//#include <Ethernet.h>
 #include "spark_wiring_tcpclient.h"
 #include "MessageBuilder.h"
 #include "TcpProtocol.h"

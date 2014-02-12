@@ -1,6 +1,5 @@
 #include "DebugUtil.h"
 #include "Lemma.h"
-//#include <Ethernet.h>
 #include "spark_wiring_network.h"
 #include "Event.h"
 #include "MessageParser.h"
@@ -18,31 +17,16 @@ Lemma::Lemma( const char * spallaId ) :
 
 void Lemma::beginEthernet(unsigned char mac[])
 {
-  /* http://arduino.cc/en/reference/ethernet
-   * Eithernet.begin() Initializes the ethernet library and network settings.
-   * The DHCP version of this function, Ethernet.begin(mac), returns an 
-   * int: 1 on a successful DHCP connection, 0 on failure. The other versions 
-   * don't return anything
-   */
-  // int result = Ethernet.begin( mac );
-  // if( result == 1 )
-  // {
     PRINT_FUNCTION_PREFIX;
     Serial.print("IP address obtained: ");
     Serial.println(Network.localIP());
+    Serial.print("on WiFi network: ");
+    Serial.println(Network.SSID());
     connected = false;
-  // }
-  // else
-  // {
-  //   PRINT_FUNCTION_PREFIX;
-  //   Serial.print("IP address FAIL with erro code: ");
-  //   Serial.println(result);
-  // }
 }
 
 void Lemma::begin(unsigned char mac[], uint16_t broadcast_port)
 {
-  /* init network */
   beginEthernet(mac);
 
   PRINT_FUNCTION_PREFIX;
@@ -59,7 +43,6 @@ void Lemma::begin(unsigned char mac[], uint16_t broadcast_port)
    * the Ethernet UDP library and network settings. 
    */
   udpClient.begin(broadcast_port);
-
 
   tryConnectingWithMaestro();
 }
@@ -100,10 +83,6 @@ void Lemma::tryConnectingWithMaestro()
     if( maestroLocater.wasLocated() )
     {
       PRINT_FUNCTION_PREFIX;
-      Serial.println("");
-      Serial.println("");
-      Serial.println("");
-      Serial.println("");
       Serial.println("maestro located");
       // srand(1);
       // delay(rand()%1000);
@@ -118,17 +97,12 @@ void Lemma::tryConnectingWithMaestro()
        * a specified IP address and port. The return value indicates success or failure. Also 
        * supports DNS lookups when using a domain name. Returns true if the connection succeeds.
        */
-      //byte server[] = { 192, 168, 1, 2 };
       if( maestroConnection.connect( udpClient.remoteIP(), 7733 ) )
       {
         PRINT_FUNCTION_PREFIX;
         Serial.println("Connected to Noam server");
         connected = true;
         Serial.println("stop UDP listening");
-        Serial.println("");
-        Serial.println("");
-        Serial.println("");
-        Serial.println("");
         maestroLocater.restartingUDP = false;
         udpClient.stop();
         /* messageSender is initialized in constructor, filer is of type EventFilter, the events
@@ -141,10 +115,6 @@ void Lemma::tryConnectingWithMaestro()
       {
         PRINT_FUNCTION_PREFIX;
         Serial.println("Connection to Noam server failed.");
-        Serial.println("");
-        Serial.println("");
-        Serial.println("");
-        Serial.println("");
         delay(2000);
       }
     }

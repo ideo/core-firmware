@@ -1,7 +1,10 @@
 #ifndef EVENT_FILTER_H
 #define EVENT_FILTER_H
+
+
 class Event;
 typedef void(*handler_t)(Event const &);
+
 
 class EventFilter
 {
@@ -25,5 +28,6 @@ private:
   filter_t filters[64];
   int nFilters;
 };
+
 #endif
 

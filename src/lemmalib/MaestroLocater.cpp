@@ -1,10 +1,9 @@
 #include "DebugUtil.h"
-//#include <Arduino.h>
 #include "spark_wiring.h"
 #include "MaestroLocater.h"
-//#include <EthernetUdp.h>
 #include "spark_wiring_udp.h"
 #include <string.h>
+
 
 MaestroLocater::MaestroLocater( UDP& udpClient ) :
     udpClient( udpClient )
