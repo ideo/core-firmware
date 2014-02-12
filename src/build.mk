@@ -54,21 +54,6 @@ CPPSRC += $(TARGET_SRC_PATH)/usb_istr.cpp
 CPPSRC += $(TARGET_SRC_PATH)/usb_prop.cpp
 CPPSRC += $(TARGET_SRC_PATH)/wifi_credentials_reader.cpp
 
-#CPPSRC += $(TARGET_SRC_PATH)/Connection.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/DataHandler.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/Event.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/EventFilter.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/LemmaApi.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/LemmaCApi.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/MessageBuilder.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/MessageParser.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/NoamServerLocator.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/TcpClient.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/TcpReader.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/TcpServer.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/UdpListener.cpp
-#CPPSRC += $(TARGET_SRC_PATH)/utils.cpp
-
 CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MaestroLocater.cpp
 CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MessageParser.cpp
 CPPSRC += $(TARGET_SRC_PATH)/lemmalib/TcpReader.cpp
