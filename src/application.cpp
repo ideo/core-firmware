@@ -32,6 +32,7 @@ static const int UDP_port = 1030;
 
 const int buttonPin = 6;  // Input button pin, connect other side of button to GND
 const int ledPin =  D7;
+int ledValue = 0;
 
 boolean ledState = HIGH;
 boolean buttonState = LOW;
@@ -62,13 +63,6 @@ static double doubleArray[] = {
 };
 
 
-static char *stringArray[] = {
-  "one", 
-  "two", 
-  "three"
-};
-
-
 Lemma lemma(lemma_ID);  // Initialize the Arduino Noam Lemma with ID <lemma_ID>
 
 void setup() {
@@ -82,7 +76,7 @@ void setup() {
   delay(2000);
   Serial.println(MSG_PREFIX"start configuring lemma ...");
 
-  lemma.hear( "buttonMessage", buttonHandler );  // Register for Noam 'buttonMessage', call buttonHandler() on new event.
+  lemma.hear( "sentFromObject2", buttonHandler );  // Register for Noam 'buttonMessage', call buttonHandler() on new event.
   lemma.begin( MAC , UDP_port);  // start listening on Noam network 1030
 
   Serial.println(MSG_PREFIX"end configuring lemma");
@@ -125,6 +119,7 @@ void periodicalSend() {
     messageCounter %= 60000;
     Serial.print("sendEvent #");
     Serial.println(messageCounter);
+    lemma.sendEvent( "buttonMessage" , messageCounter );
     lemma.sendEvent("buttonMessage", messageCounter);
 }
 
@@ -158,6 +153,7 @@ void buttonHandler(Event const & e)
 {
   Serial.print(MSG_PREFIX"buttonHandler() callback: received event (name:"); Serial.print( e.name ); Serial.println("): ");
 
+  /*
   if (0 != e.isArray) {
     int i;
     switch (e.arrayElemType) {
@@ -197,8 +193,10 @@ void buttonHandler(Event const & e)
     Serial.print(MSG_PREFIX"String value: ");  Serial.println( e.stringValue );
     Serial.print(MSG_PREFIX"Boolean value: ");  Serial.println( e.boolValue );
   }
+  */
 
-  digitalWrite( ledPin, !e.intValue );
+  ledValue = 1 - ledValue;
+  digitalWrite( ledPin, ledValue );
 }
 
 

@@ -37,6 +37,7 @@ public:
 	TCPClient(uint8_t sock);
 
 	virtual int connect(IPAddress ip, uint16_t port);
+	virtual int reconnect();
 	virtual int connect(const char *host, uint16_t port);
 	virtual size_t write(uint8_t);
 	virtual size_t write(const uint8_t *buffer, size_t size);
@@ -55,6 +56,8 @@ public:
 
 private:
 	static uint16_t _srcport;
+	IPAddress previousIP;
+	uint16_t previousPort;
 	long _sock;
 	uint8_t _buffer[TCPCLIENT_BUF_MAX_SIZE];
 	uint16_t _offset;

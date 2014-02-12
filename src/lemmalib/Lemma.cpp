@@ -51,7 +51,7 @@ void Lemma::run()
 {
   /* both are actually periodic polls, instead of callbacks */
   tryConnectingWithMaestro();
-  //handleIncomingConnections();
+  handleIncomingConnections();
 }
 
 void Lemma::hear(char const * name, handler_t callback)

@@ -457,6 +457,7 @@ void Spark_Protocol_Init(void)
 
 int Spark_Handshake(void)
 {
+  return 0;
   Spark_Protocol_Init();
   spark_protocol.reset_updating();
   int err = spark_protocol.handshake();
@@ -468,7 +469,7 @@ int Spark_Handshake(void)
 //         false on error, meaning we're probably disconnected
 bool Spark_Communication_Loop(void)
 {
-  return spark_protocol.event_loop();
+  return true; //spark_protocol.event_loop();
 }
 
 void Multicast_Presence_Announcement(void)
@@ -572,6 +573,7 @@ int Internet_Test(void)
 
 int Spark_Connect(void)
 {
+  return 1;
   Spark_Disconnect();
 
   sparkSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -599,6 +601,7 @@ int Spark_Connect(void)
 
 int Spark_Disconnect(void)
 {
+  return 0;
   Delay(100);
 
   int retVal = closesocket(sparkSocket);

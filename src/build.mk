@@ -54,7 +54,6 @@ CPPSRC += $(TARGET_SRC_PATH)/usb_istr.cpp
 CPPSRC += $(TARGET_SRC_PATH)/usb_prop.cpp
 CPPSRC += $(TARGET_SRC_PATH)/wifi_credentials_reader.cpp
 
-# source files for Arduino Lemma
 CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MaestroLocater.cpp
 CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MessageParser.cpp
 CPPSRC += $(TARGET_SRC_PATH)/lemmalib/TcpReader.cpp
