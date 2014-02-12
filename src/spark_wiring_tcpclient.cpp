@@ -52,8 +52,18 @@ int TCPClient::connect(const char* host, uint16_t port)
 	return 0;
 }
 
+
+int TCPClient::reconnect()
+{
+	return connect(previousIP, previousPort);
+}
+
+
 int TCPClient::connect(IPAddress ip, uint16_t port) 
 {
+	previousIP = ip;
+	previousPort = port;
+
 	if(WLAN_DHCP != 1)
 	{
 		return 0;
