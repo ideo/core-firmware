@@ -32,10 +32,7 @@ static const int UDP_port = 1030;
 
 const int buttonPin = 6;  // Input button pin, connect other side of button to GND
 const int ledPin =  D7;
-<<<<<<< HEAD
 int ledValue = 0;
-=======
->>>>>>> 61389073025f0481e0eedb7da99dd43d1fb298ca
 
 boolean ledState = HIGH;
 boolean buttonState = LOW;
