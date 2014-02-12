@@ -1,174 +1,201 @@
-/**
- ******************************************************************************
- * @file    application.cpp
- * @authors  Satish Nair, Zachary Crockett and Mohit Bhoite
- * @version V1.0.0
- * @date    05-November-2013
- * @brief   Tinker application
- ******************************************************************************
-  Copyright (c) 2013 Spark Labs, Inc.  All rights reserved.
+/*
 
-  This program is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation, either
-  version 3 of the License, or (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this program; if not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************
+ This Arduino project is a demonstration of the Noam platform's Arduino Lemma Library (Ethernet).
+ This project was developed on an Arduino Mega 2560 with Ethernet shield.
+ When the Arduino is connected to a Noam network, pushing the buttong will send a signal that is echoed and causes the LED to light up while the button is pressed.
+ 
+ When developing Arduino for Noam, it is important to use an event-centric paradigm.  Using software debounce ensures messages are only sent when the button state changes.
+ Keeping delays out of the main loop will ensure fast message response, as new messages are polled in the loop.
+ 
+ Author: Evan Shapiro [ IDEO ]
+ 
  */
 
-/* Includes ------------------------------------------------------------------*/  
 #include "application.h"
 
-/* Function prototypes -------------------------------------------------------*/
-int tinkerDigitalRead(String pin);
-int tinkerDigitalWrite(String command);
-int tinkerAnalogRead(String pin);
-int tinkerAnalogWrite(String command);
 
-/* This function is called once at start up ----------------------------------*/
-void setup()
-{
-	//Setup the Tinker application here
+#define MSG_PREFIX "  [Arduino] "
 
-	//Register all the Tinker functions
-	Spark.function("digitalread", tinkerDigitalRead);
-	Spark.function("digitalwrite", tinkerDigitalWrite);
 
-	Spark.function("analogread", tinkerAnalogRead);
-	Spark.function("analogwrite", tinkerAnalogWrite);
+//function prototype for polling button status
+void periodicalSend();
+void buttonMonitor();
+//function prototype for event handler that's called when 'buttonPressed' message is received
+void buttonHandler(Event const & e);
 
+static const long BAUD_RATE = 9600L;  // Serial communication baude rate for serial monitor
+static byte MAC[] = { 
+  0x90, 0xA2, 0xDA, 0x0D, 0xA1, 0x55 };  // Network MAC address must be unique on network
+//There is a sticker with a guaranteed unique MAC on your Ethernet Arduino or shield
+static char const * lemma_ID = "ARDUINO_LEMMA_ID";  // The Noam network ID, must be unique on Noam network
+static const int UDP_port = 1030;
+
+const int buttonPin = 6;  // Input button pin, connect other side of button to GND
+const int ledPin =  D7;
+int ledValue = 0;
+
+boolean ledState = HIGH;
+boolean buttonState = LOW;
+boolean lastButtonState = LOW;
+
+const unsigned int DEBOUNCE = 100;
+unsigned long lastDebounceTime = millis();
+long startTime;
+
+
+static int intArray[] = {
+  1, 
+  2, 
+  3, 
+  4
+};
+
+
+static double doubleArray[] = {
+  1.2, 
+  2.3, 
+  3.4, 
+  4.5,
+  5.6,
+  6.7,
+  7.8,
+  8.9
+};
+
+
+Lemma lemma(lemma_ID);  // Initialize the Arduino Noam Lemma with ID <lemma_ID>
+
+void setup() {
+  Serial.begin( BAUD_RATE );  // start serial communication for serial monitor output
+
+  delay(2000);
+  Serial.flush();
+  delay(2000);
+  Serial.println(MSG_PREFIX"beginning setup");
+  
+  delay(2000);
+  Serial.println(MSG_PREFIX"start configuring lemma ...");
+
+  lemma.hear( "sentFromObject2", buttonHandler );  // Register for Noam 'buttonMessage', call buttonHandler() on new event.
+  lemma.begin( MAC , UDP_port);  // start listening on Noam network 1030
+
+  Serial.println(MSG_PREFIX"end configuring lemma");
+
+  pinMode(buttonPin, INPUT);
+  digitalWrite(buttonPin, HIGH);  // enable the internal pull-up on the button
+
+  pinMode(ledPin, OUTPUT);
+  digitalWrite( ledPin, HIGH);
+  
+  Serial.println(MSG_PREFIX"end setup");
+
+  /* for periodically sending messages */
+  startTime = millis();
+
+  /* disable Spark Cloud */
+  // Serial.println(MSG_PREFIX"disable Spark Cloud");
+  // Spark.disconnect();
 }
 
-/* This function loops forever --------------------------------------------*/
-void loop()
-{
-	//This will run in a loop
+
+void loop() {
+
+  if (millis() - startTime > 100) {
+
+    lemma.run();
+
+    periodicalSend();
+
+    startTime = millis();
+  }
 }
 
-/*******************************************************************************
- * Function Name  : tinkerDigitalRead
- * Description    : Reads the digital value of a given pin
- * Input          : Pin 
- * Output         : None.
- * Return         : Value of the pin (0 or 1) in INT type
-                    Returns a negative number on failure
- *******************************************************************************/
-int tinkerDigitalRead(String pin)
-{
-	//convert ascii to integer
-	int pinNumber = pin.charAt(1) - '0';
-	//Sanity check to see if the pin numbers are within limits
-	if (pinNumber< 0 || pinNumber >7) return -1;
 
-	if(pin.startsWith("D"))
-	{
-		pinMode(pinNumber, INPUT_PULLDOWN);
-		return digitalRead(pinNumber);
-	}
-	else if (pin.startsWith("A"))
-	{
-		pinMode(pinNumber+10, INPUT_PULLDOWN);
-		return digitalRead(pinNumber+10);
-	}
-	return -2;
+void periodicalSend() {
+
+    static int messageCounter = 0;
+    
+    messageCounter++;
+    messageCounter %= 60000;
+    Serial.print("sendEvent #");
+    Serial.println(messageCounter);
+    lemma.sendEvent( "buttonMessage" , messageCounter );
 }
 
-/*******************************************************************************
- * Function Name  : tinkerDigitalWrite
- * Description    : Sets the specified pin HIGH or LOW
- * Input          : Pin and value
- * Output         : None.
- * Return         : 1 on success and a negative number on failure
- *******************************************************************************/
-int tinkerDigitalWrite(String command)
+
+// void buttonMonitor() {
+//   if( millis() - lastDebounceTime < DEBOUNCE ) return; // If DEBOUNCE time hasn't passed since last state change, exit  
+  
+//   // Otherwise, compare the state of the button pin to the buttonState bit, and change button state if they differ
+//   int buttonRead = digitalRead(buttonPin);
+  
+//   if (buttonRead != buttonState) {
+//     Serial.print(MSG_PREFIX"value changed on buttonRead: "); Serial.println(buttonRead);
+//     lastDebounceTime = millis();
+//     buttonState = buttonRead;
+
+//     lemma.sendEvent( "buttonMessage" , buttonState );
+//     lemma.sendEvent( "buttonMessage" , 1.23456 );
+//     lemma.sendEvent( "buttonMessage" , "__TEST_string__" );
+//     lemma.sendEvent( "buttonMessage" , HIGH );
+//     lemma.sendEvent( "buttonMessage" , buttonPin );
+//     lemma.sendIntArray( "buttonMessage" , intArray, 4 );
+//     lemma.sendDoubleArray( "buttonMessage" , doubleArray, 8 );
+//     lemma.sendStringArray( "buttonMessage" , stringArray, 3 );
+//   }
+// }
+
+// This callback is called when a new Noam 'buttonPressed' message is detected.
+// An Event e is passed to the function - 
+    //e has e.intValue, e.floatValue, boolValue and e.stringValue, which are interpreted from then message'JSON list
+void buttonHandler(Event const & e)
 {
-	bool value = 0;
-	//convert ascii to integer
-	int pinNumber = command.charAt(1) - '0';
-	//Sanity check to see if the pin numbers are within limits
-	if (pinNumber< 0 || pinNumber >7) return -1;
+  Serial.print(MSG_PREFIX"buttonHandler() callback: received event (name:"); Serial.print( e.name ); Serial.println("): ");
 
-	if(command.substring(3,7) == "HIGH") value = 1;
-	else if(command.substring(3,6) == "LOW") value = 0;
-	else return -2;
+  /*
+  if (0 != e.isArray) {
+    int i;
+    switch (e.arrayElemType) {
+        case nJSON_INT:
+          Serial.print(MSG_PREFIX"int array of size "); Serial.print(e.isArray); Serial.println(":");
+          for (i = 0; i < e.isArray; i++) {
+            Serial.print(MSG_PREFIX);
+            Serial.println(((int *)e.array)[i]);
+          }
+          break;
+        case nJSON_FLOAT:
+        case nJSON_DOUBLE:
+          Serial.print(MSG_PREFIX"double array of size "); Serial.print(e.isArray); Serial.println(":");
+          for (i = 0; i < e.isArray; i++) {
+            Serial.print(MSG_PREFIX);
+            Serial.println(((double *)e.array)[i]);
+          }
+          break;
+        case nJSON_BOOL:
+          // do something
+          break;
+        case nJSON_STRING:
+          Serial.print(MSG_PREFIX"string array of size "); Serial.print(e.isArray); Serial.println(":");
+          for (i = 0; i < e.isArray; i++) {
+            Serial.print(MSG_PREFIX);
+            Serial.println(((char **)e.array)[i]);
+          }
+          break;
+        default:
+          // do something
+          break;
+    }
+  }
+  else {
+    Serial.print(MSG_PREFIX"Int value: ");  Serial.println( e.intValue );
+    Serial.print(MSG_PREFIX"Float value: ");  Serial.println( e.floatValue );
+    Serial.print(MSG_PREFIX"String value: ");  Serial.println( e.stringValue );
+    Serial.print(MSG_PREFIX"Boolean value: ");  Serial.println( e.boolValue );
+  }
+  */
 
-	if(command.startsWith("D"))
-	{
-		pinMode(pinNumber, OUTPUT);
-		digitalWrite(pinNumber, value);
-		return 1;
-	}
-	else if(command.startsWith("A"))
-	{
-		pinMode(pinNumber+10, OUTPUT);
-		digitalWrite(pinNumber+10, value);
-		return 1;
-	}
-	else return -3;
+  ledValue = 1 - ledValue;
+  digitalWrite( ledPin, ledValue );
 }
 
-/*******************************************************************************
- * Function Name  : tinkerAnalogRead
- * Description    : Reads the analog value of a pin
- * Input          : Pin 
- * Output         : None.
- * Return         : Returns the analog value in INT type (0 to 4095)
-                    Returns a negative number on failure
- *******************************************************************************/
-int tinkerAnalogRead(String pin)
-{
-	//convert ascii to integer
-	int pinNumber = pin.charAt(1) - '0';
-	//Sanity check to see if the pin numbers are within limits
-	if (pinNumber< 0 || pinNumber >7) return -1;
 
-	if(pin.startsWith("D"))
-	{
-		pinMode(pinNumber, INPUT);
-		return analogRead(pinNumber);
-	}
-	else if (pin.startsWith("A"))
-	{
-		pinMode(pinNumber+10, INPUT);
-		return analogRead(pinNumber+10);
-	}
-	return -2;
-}
-
-/*******************************************************************************
- * Function Name  : tinkerAnalogWrite
- * Description    : Writes an analog value (PWM) to the specified pin
- * Input          : Pin and Value (0 to 255)
- * Output         : None.
- * Return         : 1 on success and a negative number on failure
- *******************************************************************************/
-int tinkerAnalogWrite(String command)
-{
-	//convert ascii to integer
-	int pinNumber = command.charAt(1) - '0';
-	//Sanity check to see if the pin numbers are within limits
-	if (pinNumber< 0 || pinNumber >7) return -1;
-
-	String value = command.substring(3);
-
-	if(command.startsWith("D"))
-	{
-		pinMode(pinNumber, OUTPUT);
-		analogWrite(pinNumber, value.toInt());
-		return 1;
-	}
-	else if(command.startsWith("A"))
-	{
-		pinMode(pinNumber+10, OUTPUT);
-		analogWrite(pinNumber+10, value.toInt());
-		return 1;
-	}
-	else return -2;
-}

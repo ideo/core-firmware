@@ -56,6 +56,11 @@ INCLUDE_DIRS += $(LIB_CORE_COMMUNICATION_PATH)/src
 CFLAGS =  -g3 -gdwarf-2 -Os -mcpu=cortex-m3 -mthumb 
 CFLAGS += $(patsubst %,-I$(SRC_PATH)/%,$(INCLUDE_DIRS)) -I.
 CFLAGS += -ffunction-sections -Wall -fmessage-length=0
+# CFLAGS += -I/Users/mhe/projects/GitHub/NOAM/SparkCore/tools/gcc-arm-none-eabi-4_8-2013q4/arm-none-eabi/include
+# CFLAGS += -I/Users/mhe/projects/GitHub/NOAM/SparkCore/repo/core-common-lib/CC3000_Host_Driver
+#CFLAGS += -I/Applications/Arduino.app/Contents/Resources/Java/hardware/arduino/avr/cores/arduino
+#CFLAGS += -I/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/avr/include
+CFLAGS += -I/Users/mhe/projects/GitHub/NOAM/SparkCore/repo/core-firmware/inc/lemmalib
 
 # Generate dependancy files automatically.
 CFLAGS += -MD -MP -MF $@.d
