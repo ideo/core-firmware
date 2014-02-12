@@ -40,4 +40,6 @@
 #include "spark_wiring_tcpserver.h"
 #include "spark_wiring_udp.h"
 
+#include "LemmaLib.h"
+
 #endif /* APPLICATION_H_ */
