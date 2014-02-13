@@ -1,11 +1,8 @@
 #ifndef LEMMA_H
 #define LEMMA_H
 
-//#include <EthernetClient.h>
 #include "spark_wiring_tcpclient.h"
-//#include <EthernetUdp.h>
 #include "spark_wiring_udp.h"
-//#include <EthernetServer.h>
 #include "spark_wiring_tcpserver.h"
 #include "MessageBuilder.h"
 #include "MessageSender.h"
