@@ -1,4 +1,3 @@
-#include "DebugUtil.h"
 #include "Event.h"
 #include <string.h>
 #include <stdio.h>
@@ -124,4 +123,5 @@ Event & Event::operator=(Event const & other)
   this->intValue = other.intValue;
   this->floatValue = other.floatValue;
   this->floatValue = other.boolValue;
+  return *this;
 }
