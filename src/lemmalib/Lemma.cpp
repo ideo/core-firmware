@@ -26,7 +26,7 @@ void Lemma::beginEthernet(unsigned char mac[])
     
 }
 
-void Lemma::begin(unsigned char mac[], uint16_t broadcast_port)
+void Lemma::begin(uint16_t broadcast_port)
 {
 
   PRINT_FUNCTION_PREFIX;
