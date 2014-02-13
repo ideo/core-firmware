@@ -43,7 +43,6 @@ LIB_CORE_COMMON_PATH = ../core-common-lib
 LIB_CORE_COMMUNICATION_PATH = ../core-communication-lib
 
 # Additional include directories, applied to objects built for this target.
-INCLUDE_DIRS += inc/lemmalib
 INCLUDE_DIRS += $(LIB_CORE_COMMON_PATH)/CMSIS/Include
 INCLUDE_DIRS += $(LIB_CORE_COMMON_PATH)/CMSIS/Device/ST/STM32F10x/Include
 INCLUDE_DIRS += $(LIB_CORE_COMMON_PATH)/STM32F10x_StdPeriph_Driver/inc
