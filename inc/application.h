@@ -27,6 +27,7 @@
 #define APPLICATION_H_
 
 #include "spark_wiring.h"
+#include "spark_wiring_i2c.h"
 #include "spark_wiring_interrupts.h"
 #include "spark_wiring_string.h"
 #include "spark_wiring_print.h"
@@ -39,7 +40,7 @@
 #include "spark_wiring_tcpclient.h"
 #include "spark_wiring_tcpserver.h"
 #include "spark_wiring_udp.h"
-
+#include <math.h>
 #include "LemmaLib.h"
 
 #endif /* APPLICATION_H_ */

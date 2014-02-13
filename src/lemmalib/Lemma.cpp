@@ -13,6 +13,7 @@ Lemma::Lemma( const char * spallaId ) :
   , messageSender( spallaId, maestroConnection )
   , maestroLocater( udpClient )
 {
+  connected = false;
 }
 
 void Lemma::beginEthernet(unsigned char mac[])
@@ -22,12 +23,11 @@ void Lemma::beginEthernet(unsigned char mac[])
     Serial.println(Network.localIP());
     Serial.print("on WiFi network: ");
     Serial.println(Network.SSID());
-    connected = false;
+    
 }
 
 void Lemma::begin(unsigned char mac[], uint16_t broadcast_port)
 {
-  beginEthernet(mac);
 
   PRINT_FUNCTION_PREFIX;
   Serial.println("starting EthernetServer");

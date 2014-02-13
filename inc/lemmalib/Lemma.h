@@ -15,7 +15,7 @@ class Lemma
   public:
     Lemma( const char * id );
 
-    void begin( unsigned char mac[], uint16_t broadcast_port = 8833 );
+    void begin( uint16_t broadcast_port = 1030 );
     void run();
     void hear( char const * name, handler_t callback );
     void sendEvent( char const * name, char const * value );
