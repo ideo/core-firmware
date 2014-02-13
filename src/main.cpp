@@ -23,9 +23,14 @@
   ******************************************************************************
  */
   
+#define REMOVE_SPARK_CLOUD_CONNECTION_REQUIRED
+#define SERIAL_DEBUG
+
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "spark_utilities.h"
+#include "spark_wiring_usbserial.h"
 extern "C" {
 #include "usb_conf.h"
 #include "usb_lib.h"
@@ -305,6 +310,7 @@ void Timing_Decrement(void)
 				TimingFlashUpdateTimeout++;
 			}
 		}
+		#ifndef REMOVE_SPARK_CLOUD_CONNECTION_REQUIRED
 		else if(SPARK_HANDSHAKE_COMPLETED)
 		{
 			if (TimingCloudActivityTimeout >= TIMING_CLOUD_ACTIVITY_TIMEOUT)
@@ -335,6 +341,7 @@ void Timing_Decrement(void)
 				TimingCloudHandshakeTimeout++;
 			}
 		}
+		#endif
 	}
 #endif
 

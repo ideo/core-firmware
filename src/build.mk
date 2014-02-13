@@ -11,6 +11,20 @@ INCLUDE_DIRS += inc
 
 # C source files included in this build.
 CSRC +=
+#CSRC += $(TARGET_SRC_PATH)/dump.c
+#CSRC += $(TARGET_SRC_PATH)/error.c
+#CSRC += $(TARGET_SRC_PATH)/hashtable.c
+#CSRC += $(TARGET_SRC_PATH)/LemmaList.c
+#CSRC += $(TARGET_SRC_PATH)/LemmaListDeserializer.c
+#CSRC += $(TARGET_SRC_PATH)/LemmaListSerializer.c
+#CSRC += $(TARGET_SRC_PATH)/LemmaUtil.c
+#CSRC += $(TARGET_SRC_PATH)/load.c
+#CSRC += $(TARGET_SRC_PATH)/memory.c
+#CSRC += $(TARGET_SRC_PATH)/pack_unpack.c
+#CSRC += $(TARGET_SRC_PATH)/strbuffer.c
+#CSRC += $(TARGET_SRC_PATH)/strconv.c
+#CSRC += $(TARGET_SRC_PATH)/utf.c
+#CSRC += $(TARGET_SRC_PATH)/value.c
 
 # C++ source files included in this build.
 CPPSRC += $(TARGET_SRC_PATH)/application.cpp
@@ -39,6 +53,18 @@ CPPSRC += $(TARGET_SRC_PATH)/usb_endp.cpp
 CPPSRC += $(TARGET_SRC_PATH)/usb_istr.cpp
 CPPSRC += $(TARGET_SRC_PATH)/usb_prop.cpp
 CPPSRC += $(TARGET_SRC_PATH)/wifi_credentials_reader.cpp
+
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MaestroLocater.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MessageParser.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/TcpReader.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/EventFilter.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MemoryFree.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MessageSender.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/nJSON.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/Lemma.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MessageBuilder.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/TcpProtocol.cpp
+CPPSRC += $(TARGET_SRC_PATH)/lemmalib/Event.cpp
 
 # ASM source files included in this build.
 ASRC +=
