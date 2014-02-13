@@ -18,12 +18,28 @@ extern "C"
  */
 int parseCodedString( char const * message, char * messageType, char * lemmaID, char * messageName, void * value, void ** array, int * size )
 {
+  Serial.println("Parse coded string...");
+  int messagelen = strlen(message);
+  Serial.print("Message length: " );
+  Serial.println(messagelen);
+  Serial.println("Here 1");
   int valueType = -1;
-
+  Serial.println("Here 2");
+  
+  // This line seems to hang, not sure why
   char *orig = (char *)calloc(1, strlen(message) * sizeof(char));
+  Serial.println("Here 3");
   strncpy(orig, message+1, strlen(message)-2);
+
+  Serial.print("Orig Message: ");
+  Serial.println(orig);
+  Serial.println("Here 4");
+  
   char *token = NULL;
+  Serial.println("Making tokens...");
+  Serial.println(orig);
   token = strtok (orig, ",");
+  Serial.println("Tokens made...");
   int index = 0;
   bool isArray = false;
   int arrayIndex = 0;
@@ -32,8 +48,14 @@ int parseCodedString( char const * message, char * messageType, char * lemmaID, 
   char **stringArray = NULL;
   char tempToken[PARSER_BUF_SIZE];
 
+  Serial.println("Stating loop....");
+  Serial.print("    Token: ");
+  Serial.println(token);
+
   while (NULL != token)
   {
+    Serial.print("parseCodedString: ");
+    Serial.println(index);
     switch (index) {
       case 0:
         /* message type, in this case should be "event" */
@@ -222,6 +244,7 @@ int parseCodedString( char const * message, char * messageType, char * lemmaID, 
 
 Event MessageParser::parse( char const * message )
 {
+  Serial.println("Starting to parse string....");
   char messageType[32];
   char lemmaID[32];
   char messageName[32];
@@ -235,6 +258,7 @@ Event MessageParser::parse( char const * message )
   int valueType = parseCodedString(message, messageType, lemmaID, messageName, valueBuf, &array, &size);
   bool isArray = (NULL != array);
 
+  Serial.println("Start switch for parsing...");
   switch (valueType) 
   {
     case nJSON_INT: 

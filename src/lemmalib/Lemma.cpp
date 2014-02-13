@@ -276,16 +276,16 @@ void Lemma::handleIncomingConnections()
 
   if (maestroConnection.connected()) {
     TCPClient incomingClient = server.available();
-    if (incomingClient) {
-      PRINT_FUNCTION_PREFIX;
-      Serial.print(counter);
-      Serial.println(" : incoming data available");
+    if (incomingClient.available()) {
       TcpReader reader( incomingClient );
       char* message = reader.read();
+      // Release the incoming client
+      incomingClient.stop();
       if (message) {
         Serial.print(counter);
         Serial.print(" : RECEIVED: ");
         Serial.println(message);
+        free(message);
       }
       else {
         Serial.print(counter);

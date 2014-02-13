@@ -474,6 +474,7 @@ bool Spark_Communication_Loop(void)
 
 void Multicast_Presence_Announcement(void)
 {
+  return;
   long multicast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   if (0 > multicast_socket)
     return;
