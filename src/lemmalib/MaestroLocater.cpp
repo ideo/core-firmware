@@ -23,7 +23,7 @@ void MaestroLocater::begin()
 {
   ip[0] = 0;
   port = 0;
-  udpClient.begin(1030);
+  udpClient.begin(1032);
   locating = true;
 }
 

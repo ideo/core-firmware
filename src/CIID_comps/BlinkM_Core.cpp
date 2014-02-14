@@ -1,4 +1,4 @@
-#define ROOM_ID ""
+#define ROOM_ID "evan test room"
 #define PART_NAME "BlinkM_Core_"
 #define PART_NUM "1"
 #define PART_ID PART_NAME PART_NUM
@@ -40,7 +40,7 @@ void setup(){
   //  NOAM: 
   #define hearString "colorCommand_" PART_NUM
   lemma.hear( hearString , commandHandler );
-  lemma.begin( NULL );
+  lemma.begin();
 }
 
 void loop(){  
