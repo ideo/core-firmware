@@ -198,7 +198,6 @@ int main(void)
 void Timing_Decrement(void)
 {
 	TimingMillis++;
-
 	if (TimingDelay != 0x00)
 	{
 		TimingDelay--;

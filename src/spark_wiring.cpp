@@ -493,6 +493,7 @@ void analogWrite(uint16_t pin, uint8_t value)
 unsigned long millis(void)
 {
 	return TimingMillis;
+	return TimingMillis++; //GetSystem1MsTick();
 }
 
 /*
