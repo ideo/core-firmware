@@ -3,7 +3,7 @@
 
 #define ROOM_ID ""
 #define PART_NAME "Buttons_Core_"
-#define PART_NUM "1"
+#define PART_NUM "2"
 #define PART_ID PART_NAME PART_NUM
 #define DEBOUNCE 50
 #define SERIAL_DEBUG true
