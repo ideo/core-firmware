@@ -28,7 +28,7 @@ static byte MAC[] = {
   0x90, 0xA2, 0xDA, 0x0D, 0xA1, 0x55 };  // Network MAC address must be unique on network
 //There is a sticker with a guaranteed unique MAC on your Ethernet Arduino or shield
 static char const * lemma_ID = "SPARK_LEMMA_ID";  // The Noam network ID, must be unique on Noam network
-static char const * roomName = "Noam";  // The Noam Room Name, must match Noam Server to which you are connecting
+static char const * roomName = "Noam room name";  // The Noam Room Name, must match field in Noam Server to which you are connecting
 
 const int buttonPin = 6;  // Input button pin, connect other side of button to GND
 const int ledPin =  D7;

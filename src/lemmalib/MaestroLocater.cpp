@@ -32,6 +32,10 @@ void MaestroLocater::sendBroadcast()
     snprintf(message, RX_BUF_MAX_SIZE, "[\"marco\", \"%s\", \"%s\", \"spark\", \"1.1\"]", lemmaId, roomName);
 
     udpClient.beginPacket("255.255.255.255", 1030);
+
+    //TODO: remove
+    Serial.print("marco broadcast: "); Serial.println(message);
+
     size_t sent = udpClient.write((uint8_t*)&message[0], strlen(message));
     udpClient.endPacket();
 }
@@ -47,7 +51,7 @@ void MaestroLocater::tryLocate()
 
   if (millis() - lastBroadcastMillis > 2000) {
     sendBroadcast();
-    lastBroadcastMillis = millis();
+    lastBroadcastMillis = millis();    
   }
 
 
