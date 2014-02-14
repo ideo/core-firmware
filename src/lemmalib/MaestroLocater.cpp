@@ -18,23 +18,6 @@ MaestroLocater::MaestroLocater( UDP& udpClient, const char * lemmaId, const char
 }
 
 
-void MaestroLocater::reset()
-{
-  if (wasLocated()) {
-
-    ip[0] = 0;
-    port = 0;
-
-    if (false == restartingUDP) {
-      restartingUDP = true;
-      Serial.println("stop UDP listening");
-      udpClient.stop();
-      delay(500);
-      Serial.println("restart UDP listening");
-    }
-  }
-}
-
 void MaestroLocater::sendBroadcast()
 {
     char message[RX_BUF_MAX_SIZE];
@@ -52,7 +35,6 @@ void MaestroLocater::sendBroadcast()
  */
 void MaestroLocater::tryLocate()
 {
-  udpClient.begin(1032);
   ip[0] = 0;
   port = 0;
 
@@ -75,8 +57,7 @@ void MaestroLocater::tryLocate()
 
     PRINT_FUNCTION_PREFIX;
     Serial.print("raw datagram: ");
-    Serial.print(packet);
-    Serial.println();
+    Serial.println(packet);
 
     char name[128];
     if ( MessageParser::parsePolo( &packet[0], name, 128, port ) )

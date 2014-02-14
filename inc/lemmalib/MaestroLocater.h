@@ -15,7 +15,6 @@ private:
 public:
   MaestroLocater( UDP& udpClient, const char * lemmaId, const char * desiredRoomName );
 
-  void reset();
   void tryLocate();
   bool wasLocated();
   char const * maestroIp();

@@ -43,6 +43,7 @@ void Lemma::begin(unsigned char mac[])
    * the Ethernet UDP library and network settings.
    */
 
+  udpClient.begin(1032);
   tryConnectingWithMaestro();
 }
 
@@ -96,8 +97,6 @@ void Lemma::tryConnectingWithMaestro()
         Serial.println("Connected to Noam server");
         connected = true;
         Serial.println("stop UDP listening");
-        maestroLocater.restartingUDP = false;
-        udpClient.stop();
         /* messageSender is initialized in constructor, filer is of type EventFilter, the events
          * array in EventFilter was filled by the Lemma::hear() call when it calls the add() function
          * of EventFilter. The play array is empty, so the last 2 arguments are empty.
@@ -120,7 +119,6 @@ void Lemma::reset()
     PRINT_FUNCTION_PREFIX;
     Serial.println("reset maestro connection after failed to send event to NOAM server");
     maestroConnection.stop();
-    maestroLocater.reset();
 }
 
 
