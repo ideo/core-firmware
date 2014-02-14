@@ -490,9 +490,9 @@ void analogWrite(uint16_t pin, uint8_t value)
  * 		  For now, let's not worry about what happens when this overflows (which should happen after 49 days).
  * 		  At some point we'll have to figure that out, though.
  */
-system_tick_t millis(void)
+unsigned long millis(void)
 {
-	return GetSystem1MsTick();
+	return TimingMillis;
 }
 
 /*

@@ -69,7 +69,12 @@
 #define D6 6
 #define D7 7
 
+#if defined (USE_SPARK_CORE_V01)
+#define LED1 8
+#define LED2 9
+#elif defined (USE_SPARK_CORE_V02)
 #define LED1 LED_USER
+#endif
 
 #define A0 10
 #define A1 11
@@ -153,7 +158,7 @@ void analogWrite(uint16_t pin, uint8_t value);
 /*
 * Timing
 */
-system_tick_t millis(void);
+unsigned long millis(void);
 unsigned long micros(void);
 void delay(unsigned long ms);
 void delayMicroseconds(unsigned int us);

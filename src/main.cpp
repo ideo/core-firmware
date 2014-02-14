@@ -47,10 +47,10 @@ extern "C" {
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
+volatile uint32_t TimingMillis;
 volatile uint32_t TimingSparkConnectDelay;
 volatile uint32_t TimingCloudHandshakeTimeout;
 volatile uint32_t TimingCloudActivityTimeout;
-volatile uint32_t TimingCloudSocketTimeout;
 volatile uint32_t TimingFlashUpdateTimeout;
 volatile uint32_t TimingAPIBlockingTimeout;
 
@@ -112,12 +112,14 @@ int main(void)
 	LED_RGB_OVERRIDE = 1;
 #endif
 
+#if defined (USE_SPARK_CORE_V02)
 	LED_SetRGBColor(RGB_COLOR_WHITE);
 	LED_On(LED_RGB);
 	SPARK_LED_FADE = 1;
 
 #if defined (SPARK_RTC_ENABLE)
 	RTC_Configuration();
+#endif
 #endif
 
 #ifdef IWDG_RESET_ENABLE
@@ -195,6 +197,8 @@ int main(void)
  *******************************************************************************/
 void Timing_Decrement(void)
 {
+	TimingMillis++;
+
 	if (TimingDelay != 0x00)
 	{
 		TimingDelay--;
@@ -226,14 +230,19 @@ void Timing_Decrement(void)
 	}
 	else if(SPARK_LED_FADE)
 	{
+#if defined (USE_SPARK_CORE_V02)
 		LED_Fade(LED_RGB);
 		if(SPARK_HANDSHAKE_COMPLETED)
 			TimingLED = 20;
 		else
 			TimingLED = 1;
+#endif
 	}
 	else if(SPARK_HANDSHAKE_COMPLETED)
 	{
+#if defined (USE_SPARK_CORE_V01)
+		LED_On(LED1);
+#elif defined (USE_SPARK_CORE_V02)
 #if defined (RGB_NOTIFICATIONS_CONNECTING_ONLY)
 		LED_Off(LED_RGB);
 #else
@@ -241,10 +250,15 @@ void Timing_Decrement(void)
 		LED_On(LED_RGB);
 		SPARK_LED_FADE = 1;
 #endif
+#endif
 	}
 	else
 	{
+#if defined (USE_SPARK_CORE_V01)
+		LED_Toggle(LED1);
+#elif defined (USE_SPARK_CORE_V02)
 		LED_Toggle(LED_RGB);
+#endif
 		if(SPARK_SOCKET_CONNECTED)
 			TimingLED = 50;		//50ms
 		else

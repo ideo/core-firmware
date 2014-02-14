@@ -128,8 +128,10 @@ void Start_Smart_Config(void)
 	SPARK_FLASH_UPDATE = 0;
 	SPARK_LED_FADE = 0;
 
+#if defined (USE_SPARK_CORE_V02)
 	LED_SetRGBColor(RGB_COLOR_BLUE);
 	LED_On(LED_RGB);
+#endif
 
 	/* Reset all the previous configuration */
 	wlan_ioctl_set_connection_policy(DISABLE, DISABLE, DISABLE);
@@ -166,7 +168,11 @@ void Start_Smart_Config(void)
 			int toggle = 25;
 			while(toggle--)
 			{
+#if defined (USE_SPARK_CORE_V01)
+				LED_Toggle(LED2);
+#elif defined (USE_SPARK_CORE_V02)
 				LED_Toggle(LED_RGB);
+#endif
 				Delay(50);
 			}
 			NVMEM_Spark_File_Data[WLAN_PROFILE_FILE_OFFSET] = 0;
@@ -175,13 +181,22 @@ void Start_Smart_Config(void)
 		}
 		else
 		{
+#if defined (USE_SPARK_CORE_V01)
+			LED_Toggle(LED2);
+#elif defined (USE_SPARK_CORE_V02)
 			LED_Toggle(LED_RGB);
+#endif
 			Delay(250);
+
 			wifi_creds_reader.read();
 		}
 	}
 
+#if defined (USE_SPARK_CORE_V01)
+	LED_Off(LED2);
+#elif defined (USE_SPARK_CORE_V02)
 	LED_On(LED_RGB);
+#endif
 
 	/* read count of wlan profiles stored */
 	nvmem_read(NVMEM_SPARK_FILE_ID, 1, WLAN_PROFILE_FILE_OFFSET, &NVMEM_Spark_File_Data[WLAN_PROFILE_FILE_OFFSET]);
@@ -224,8 +239,10 @@ void Start_Smart_Config(void)
 	/* Mask out all non-required events */
 	wlan_set_event_mask(HCI_EVNT_WLAN_KEEPALIVE | HCI_EVNT_WLAN_UNSOL_INIT | HCI_EVNT_WLAN_ASYNC_PING_REPORT);
 
+#if defined (USE_SPARK_CORE_V02)
     LED_SetRGBColor(RGB_COLOR_GREEN);
 	LED_On(LED_RGB);
+#endif
 
 	Set_NetApp_Timeout();
 
@@ -250,9 +267,13 @@ void WLAN_Async_Callback(long lEventType, char *data, unsigned char length)
 		case HCI_EVNT_WLAN_UNSOL_DISCONNECT:
 			if(WLAN_CONNECTED)
 			{
+#if defined (USE_SPARK_CORE_V01)
+				LED_Off(LED2);
+#elif defined (USE_SPARK_CORE_V02)
 				LED_RGB_OVERRIDE = 0;
 				LED_SetRGBColor(RGB_COLOR_GREEN);
 				LED_On(LED_RGB);
+#endif
 			}
 			else
 			{
@@ -278,8 +299,12 @@ void WLAN_Async_Callback(long lEventType, char *data, unsigned char length)
 			if (*(data + 20) == 0)
 			{
 				WLAN_DHCP = 1;
+#if defined (USE_SPARK_CORE_V01)
+				LED_On(LED2);
+#elif defined (USE_SPARK_CORE_V02)
 				LED_SetRGBColor(RGB_COLOR_GREEN);
 				LED_On(LED_RGB);
+#endif
 			}
 			else
 			{
@@ -386,11 +411,13 @@ void SPARK_WLAN_Setup(void (*presence_announcement_callback)(void))
 		}
 	}
 
+#if defined (USE_SPARK_CORE_V02)
 	if(WLAN_MANUAL_CONNECT || !WLAN_SMART_CONFIG_START)
 	{
 		LED_SetRGBColor(RGB_COLOR_GREEN);
 		LED_On(LED_RGB);
 	}
+#endif
 
 	nvmem_read_sp_version(patchVer);
 	if (patchVer[1] == 24)//19 for old patch
@@ -513,6 +540,7 @@ void SPARK_WLAN_Loop(void)
 
 		netapp_ipconfig(&ip_config);
 
+#if defined (USE_SPARK_CORE_V02)
 		if(Spark_Error_Count)
 		{
 			LED_SetRGBColor(RGB_COLOR_RED);
@@ -536,6 +564,7 @@ void SPARK_WLAN_Loop(void)
 
 		LED_SetRGBColor(RGB_COLOR_CYAN);
 		LED_On(LED_RGB);
+#endif
 
 		if(Spark_Connect() < 0)
 		{
