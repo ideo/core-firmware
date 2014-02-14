@@ -49,6 +49,7 @@ public:
 	virtual void stop();
 	virtual bool connected();
 	virtual operator bool();
+	virtual long sock() { return _sock; };
 
 	friend class TCPServer;
 

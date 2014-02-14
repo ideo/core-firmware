@@ -2,6 +2,7 @@
 #include "spark_wiring.h"
 #include "MaestroLocater.h"
 #include "spark_wiring_udp.h"
+#include "spark_wiring_usbserial.h"
 #include "MessageParser.h"
 #include <string.h>
 
@@ -22,7 +23,7 @@ void MaestroLocater::begin()
 {
   ip[0] = 0;
   port = 0;
-  udpClient.begin(1032);
+  udpClient.begin(1030);
   locating = true;
 }
 
@@ -32,7 +33,11 @@ void MaestroLocater::sendBroadcast()
     snprintf(message, RX_BUF_MAX_SIZE, "[\"marco\", \"%s\", \"%s\", \"spark\", \"1.1\"]", lemmaId, roomName);
 
     udpClient.beginPacket("255.255.255.255", 1030);
-    size_t sent = udpClient.write((uint8_t*)&message[0], strlen(message));
+    size_t totalSent = 0;
+    int iter = 0;
+    while(totalSent != strlen(message) && ++iter < 1000){
+      totalSent += udpClient.write((uint8_t*)&message[totalSent], strlen(message) - totalSent);
+    }
     udpClient.endPacket();
 }
 
@@ -80,7 +85,6 @@ void MaestroLocater::tryLocate()
       PRINT_FUNCTION_PREFIX;
       Serial.print("port from UDP datagram: ");
       Serial.println(port);
-      udpClient.stop();
       locating = false;
     }
     else
@@ -90,6 +94,7 @@ void MaestroLocater::tryLocate()
 
       port = 0;
     }
+    udpClient.stop();
   }
 }
 

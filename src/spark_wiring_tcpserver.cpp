@@ -92,24 +92,7 @@ TCPClient TCPServer::available()
 	sockaddr tClientAddr;
 	socklen_t tAddrLen = sizeof(tClientAddr);
 
-	int sock;
-	while (true) {
-		sock = accept(_sock, (sockaddr*)&tClientAddr, &tAddrLen);
-		//!  
-		//!  @ref core-common-lib/CC3000_Host_Driver/socket.c  
-		//!  
-		//!  @return  For socket in blocking mode:
-		//!				      On success, socket handle. on failure negative
-		//!			      For socket in non-blocking mode:
-		//!				     - On connection establishment, socket handle
-		//!				     - On connection pending, SOC_IN_PROGRESS (-2)
-		//!			       - On failure, SOC_ERROR	(-1)
-		//!  
-		if (-2 != sock) {
-			/* re-try until it is ready or not SOC_IN_PROGRESS */
-			break;
-		}
-	}
+	int sock = accept(_sock, (sockaddr*)&tClientAddr, &tAddrLen);
 
 	if (sock < 0)
 	{

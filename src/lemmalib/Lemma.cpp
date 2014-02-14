@@ -215,7 +215,7 @@ void Lemma::handleIncomingConnections()
 
   if (maestroConnection.connected()) {
     TCPClient incomingClient = server.available();
-    if (incomingClient.available()) {
+    if (incomingClient.sock() != MAX_SOCK_NUM) {
       TcpReader reader( incomingClient );
       char* message = reader.read();
       // Release the incoming client
