@@ -33,4 +33,8 @@ SUITE(MessageParser)
     CHECK(abs(event.floatValue - 14.10) < 0.01 );
   }
 
+  TEST(parsePoloMessage) {
+
+  }
+
 }

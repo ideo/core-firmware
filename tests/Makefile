@@ -13,11 +13,13 @@ testlibdir  = UnitTest++
 testlib     = $(testlibdir)/libUnitTest++.a
 testrunner  = Main.cpp
 
-objects = ../src/lemmalib/MessageParser.o \
+objects = \
+					../src/lemmalib/MessageParser.o \
           ../src/lemmalib/Event.o \
 					../lib/cJSON/cJSON.o
 
-testobjects = MessageParserTests.o
+testobjects = \
+							MessageParserTests.o
 
 
 all: $(lib)

@@ -8,10 +8,12 @@ class MaestroLocater
 private:
   UDP& udpClient;
   char ip[16];
+  const char * lemmaId;
+  const char * roomName;
   uint16_t port;
 
 public:
-  MaestroLocater( UDP& udpClient );
+  MaestroLocater( UDP& udpClient, const char * lemmaId, const char * desiredRoomName );
 
   void reset();
   void tryLocate();
@@ -22,6 +24,7 @@ public:
   bool restartingUDP;
 
 private:
+  int lastBroadcastMillis;
   bool lastCharacterIsBracket( char const * string );
 };
 

@@ -7,11 +7,11 @@
 #include "nJSON.h"
 
 
-Lemma::Lemma( const char * spallaId ) :
+Lemma::Lemma( const char * lemmaId, const char * desiredRoomName ) :
     server( LISTEN_PORT )
-  , messageBuilder( spallaId )
-  , messageSender( spallaId, maestroConnection )
-  , maestroLocater( udpClient )
+  , messageBuilder( lemmaId )
+  , messageSender( lemmaId, maestroConnection )
+  , maestroLocater( udpClient, lemmaId, desiredRoomName )
 {
 }
 
@@ -25,24 +25,24 @@ void Lemma::beginEthernet(unsigned char mac[])
     connected = false;
 }
 
-void Lemma::begin(unsigned char mac[], uint16_t broadcast_port)
+void Lemma::begin(unsigned char mac[])
 {
   beginEthernet(mac);
 
   PRINT_FUNCTION_PREFIX;
   Serial.println("starting EthernetServer");
   /* server member varialble is of type EthernetServer, initialized with port LISTEN_PORT
-   * in the constructor, the begine() call tells the server to begin listening for incoming 
+   * in the constructor, the begine() call tells the server to begin listening for incoming
    * connections
    */
-  server.begin();
+  // server.begin();
 
   PRINT_FUNCTION_PREFIX;
   Serial.println("starting EthernetUDP");
-  /* updClient member variable is of type EthernetUDP, EthernetUDP.begin(localPort) initializes  
-   * the Ethernet UDP library and network settings. 
+  /* updClient member variable is of type EthernetUDP, EthernetUDP.begin(localPort) initializes
+   * the Ethernet UDP library and network settings.
    */
-  udpClient.begin(broadcast_port);
+  udpClient.begin(1032);
 
   tryConnectingWithMaestro();
 }
@@ -60,21 +60,21 @@ void Lemma::hear(char const * name, handler_t callback)
 }
 
 void Lemma::tryConnectingWithMaestro()
-{ 
+{
   /* maestroConnection is of type EthernetClient, connected() is a built-in function */
   if( 0 == maestroConnection.connected() )
   {
-    PRINT_FUNCTION_PREFIX;
-    Serial.println("Not Connected to Noam server");
-    maestroConnection.stop();
-    maestroLocater.reset();
-    connected = false;
+    // PRINT_FUNCTION_PREFIX;
+    // Serial.println("Not Connected to Noam server");
+    // maestroConnection.stop();
+    // maestroLocater.reset();
+    // connected = false;
 
-    Serial.print("IP address obtained: ");
-    Serial.println(Network.localIP());
+    // Serial.print("IP address obtained: ");
+    // Serial.println(Network.localIP());
 
-    PRINT_FUNCTION_PREFIX;
-    Serial.println("try locating maestro ...");
+    // PRINT_FUNCTION_PREFIX;
+    // Serial.println("try locating maestro ...");
 
     /* MaestroLocater::tryLocate() is non-blocking, only attempts to get IP:port from UDP datagram */
     maestroLocater.tryLocate();
@@ -93,8 +93,8 @@ void Lemma::tryConnectingWithMaestro()
       Serial.print( udpClient.remoteIP() );
       Serial.print( ":" );
       Serial.println( 7733 );
-      /* maestroConnection is of type EthernetClient, connect() is a built-in function, connects to 
-       * a specified IP address and port. The return value indicates success or failure. Also 
+      /* maestroConnection is of type EthernetClient, connect() is a built-in function, connects to
+       * a specified IP address and port. The return value indicates success or failure. Also
        * supports DNS lookups when using a domain name. Returns true if the connection succeeds.
        */
       if( maestroConnection.connect( udpClient.remoteIP(), 7733 ) )
@@ -118,13 +118,13 @@ void Lemma::tryConnectingWithMaestro()
         delay(2000);
       }
     }
-    else 
+    else
     {
-      PRINT_FUNCTION_PREFIX;
-      Serial.println("did not find maestro server IP");
+      // PRINT_FUNCTION_PREFIX;
+      // Serial.println("did not find maestro server IP");
     }
-    PRINT_FUNCTION_PREFIX;
-    Serial.println("End 1 attempt to connect to Noam server");
+    // PRINT_FUNCTION_PREFIX;
+    // Serial.println("End 1 attempt to connect to Noam server");
   }
 }
 
@@ -175,7 +175,7 @@ void Lemma::sendEvent( char const * name, unsigned long value )
 }
 
 void Lemma::sendEvent( char const * name, double value )
-{  
+{
   if (false == connected) {
     return;
   }
@@ -187,7 +187,7 @@ void Lemma::sendEvent( char const * name, double value )
 }
 
 void Lemma::sendEvent( char const * name, bool value )
-{  
+{
   if (false == connected) {
     return;
   }
