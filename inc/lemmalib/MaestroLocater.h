@@ -26,6 +26,8 @@ public:
 private:
   int lastBroadcastMillis;
   bool lastCharacterIsBracket( char const * string );
+  void sendBroadcast();
+
 };
 
 #endif

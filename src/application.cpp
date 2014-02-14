@@ -118,8 +118,8 @@ void periodicalSend() {
 
     messageCounter++;
     messageCounter %= 60000;
-    Serial.print("sendEvent #");
-    Serial.println(messageCounter);
+    // Serial.print("sendEvent #");
+    // Serial.println(messageCounter);
     lemma.sendEvent( "buttonMessage" , messageCounter );
     lemma.sendEvent("buttonMessage", messageCounter);
 }

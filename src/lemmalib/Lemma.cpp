@@ -42,7 +42,6 @@ void Lemma::begin(unsigned char mac[])
   /* updClient member variable is of type EthernetUDP, EthernetUDP.begin(localPort) initializes
    * the Ethernet UDP library and network settings.
    */
-  udpClient.begin(1032);
 
   tryConnectingWithMaestro();
 }
@@ -62,19 +61,13 @@ void Lemma::hear(char const * name, handler_t callback)
 void Lemma::tryConnectingWithMaestro()
 {
   /* maestroConnection is of type EthernetClient, connected() is a built-in function */
-  if( 0 == maestroConnection.connected() )
+  if( !maestroConnection.connected() )
   {
     // PRINT_FUNCTION_PREFIX;
     // Serial.println("Not Connected to Noam server");
     // maestroConnection.stop();
     // maestroLocater.reset();
     // connected = false;
-
-    // Serial.print("IP address obtained: ");
-    // Serial.println(Network.localIP());
-
-    // PRINT_FUNCTION_PREFIX;
-    // Serial.println("try locating maestro ...");
 
     /* MaestroLocater::tryLocate() is non-blocking, only attempts to get IP:port from UDP datagram */
     maestroLocater.tryLocate();
@@ -118,13 +111,6 @@ void Lemma::tryConnectingWithMaestro()
         delay(2000);
       }
     }
-    else
-    {
-      // PRINT_FUNCTION_PREFIX;
-      // Serial.println("did not find maestro server IP");
-    }
-    // PRINT_FUNCTION_PREFIX;
-    // Serial.println("End 1 attempt to connect to Noam server");
   }
 }
 

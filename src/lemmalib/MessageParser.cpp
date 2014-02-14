@@ -2,6 +2,22 @@
 #include <stddef.h>
 #include <cJSON.h>
 #include "Event.h"
+#include <string.h>
+
+bool MessageParser::parsePolo( char const * message, char * name, int nameSize, uint16_t& outPort) {
+  cJSON* json = cJSON_Parse( message );
+
+  if(json == NULL || json->type != cJSON_Array) { return false; }
+  cJSON* messageType = cJSON_GetArrayItem( json, 0 );
+  cJSON* roomName = cJSON_GetArrayItem( json, 1 );
+  if (roomName == NULL) { return false; }
+  strncpy(name, roomName->valuestring, nameSize);
+
+  cJSON* portNumber = cJSON_GetArrayItem( json, 2 );
+  if (portNumber == NULL) { return false; }
+  outPort = portNumber->valueint;
+  return true;
+}
 
 Event MessageParser::parse( char const * message )
 {

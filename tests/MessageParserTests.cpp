@@ -33,8 +33,37 @@ SUITE(MessageParser)
     CHECK(abs(event.floatValue - 14.10) < 0.01 );
   }
 
-  TEST(parsePoloMessage) {
-
+  TEST(parseBadPoloMessage) {
+    char message[] = "1234";
+    char name[32];
+    uint16_t port;
+    bool result = MessageParser::parsePolo( message, name, 32, port);
+    CHECK(!result);
   }
 
+  TEST(parseOldPoloMessage) {
+    char message[] = "[Maestro@3534]";
+    char name[32];
+    uint16_t port;
+    bool result = MessageParser::parsePolo( message, name, 32, port);
+    CHECK(!result);
+  }
+
+  TEST(parsePoloMessage) {
+    const char * message = "[\"polo\",\"Noam\",7733]";
+    char name[32];
+    uint16_t port;
+    bool result = MessageParser::parsePolo( message, name, 32, port);
+    CHECK(result);
+    CHECK_EQUAL(7733, port);
+    CHECK_EQUAL("Noam", name);
+  }
+
+  TEST(parseAlmostPoloMessage) {
+    const char * message = "[\"polo\"]";
+    char name[32];
+    uint16_t port;
+    bool result = MessageParser::parsePolo( message, name, 32, port);
+    CHECK(!result);
+  }
 }

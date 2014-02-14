@@ -2,6 +2,7 @@
 #include "spark_wiring.h"
 #include "MaestroLocater.h"
 #include "spark_wiring_udp.h"
+#include "MessageParser.h"
 #include <string.h>
 
 
@@ -30,9 +31,18 @@ void MaestroLocater::reset()
       udpClient.stop();
       delay(500);
       Serial.println("restart UDP listening");
-      udpClient.begin(0);
     }
   }
+}
+
+void MaestroLocater::sendBroadcast()
+{
+    char message[RX_BUF_MAX_SIZE];
+    snprintf(message, RX_BUF_MAX_SIZE, "[\"marco\", \"%s\", \"%s\", \"spark\", \"1.1\"]", lemmaId, roomName);
+
+    udpClient.beginPacket("255.255.255.255", 1030);
+    size_t sent = udpClient.write((uint8_t*)&message[0], strlen(message));
+    udpClient.endPacket();
 }
 
 
@@ -42,31 +52,13 @@ void MaestroLocater::reset()
  */
 void MaestroLocater::tryLocate()
 {
+  udpClient.begin(1032);
   ip[0] = 0;
   port = 0;
 
-  // PRINT_FUNCTION_PREFIX;
-  // Serial.print("try to parse UDP packet, remote IP: ");
-  // Serial.print(udpClient.remoteIP());
-  // Serial.print("  remote port: ");
-  // Serial.println(udpClient.remotePort());
-
-
-  // TODO: if we're overdue to broadcast another UDP
-  //       do that for every broadcast address on the device
-  // ["marco", "lemma_id", "Desired Room name", "spark", "1.1"]
   if (millis() - lastBroadcastMillis > 2000) {
-    char message[RX_BUF_MAX_SIZE];
-    snprintf(message, RX_BUF_MAX_SIZE, "[\"marco\", \"%s\", \"%s\", \"spark\", \"1.1\"]", lemmaId, roomName);
-    Serial.print("Sending Marco: ");
-    Serial.println(message);
-
-    udpClient.beginPacket("255.255.255.255", 1030);
-    size_t sent = udpClient.write((uint8_t*)&message[0], strlen(message));
-    udpClient.endPacket();
+    sendBroadcast();
     lastBroadcastMillis = millis();
-    Serial.print("Bytes Sent: ");
-    Serial.println(sent);
   }
 
 
@@ -77,8 +69,8 @@ void MaestroLocater::tryLocate()
    */
   if( udpClient.parsePacket() )
   {
-    char packet[64];
-    size_t bytesRead = udpClient.read( packet, 63 );
+    char packet[RX_BUF_MAX_SIZE];
+    size_t bytesRead = udpClient.read( packet, RX_BUF_MAX_SIZE );
     packet[bytesRead] = 0;
 
     PRINT_FUNCTION_PREFIX;
@@ -86,9 +78,8 @@ void MaestroLocater::tryLocate()
     Serial.print(packet);
     Serial.println();
 
-//TODO: use json parser to parse polo message
-    int argumentsMatched = sscanf( packet, "[Maestro@%u]", &port );
-    if( 1 == argumentsMatched && lastCharacterIsBracket( packet ))
+    char name[128];
+    if ( MessageParser::parsePolo( &packet[0], name, 128, port ) )
     {
       PRINT_FUNCTION_PREFIX;
       Serial.println("captured valid UDP datagram");
@@ -106,6 +97,7 @@ void MaestroLocater::tryLocate()
       PRINT_FUNCTION_PREFIX;
       Serial.print("port from UDP datagram: ");
       Serial.println(port);
+      udpClient.stop();
     }
     else
     {
