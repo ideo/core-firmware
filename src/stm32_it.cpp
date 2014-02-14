@@ -169,7 +169,7 @@ void PendSV_Handler(void)
  *******************************************************************************/
 void SysTick_Handler(void)
 {
-	System1MsTick();
+	//System1MsTick();
 	Timing_Decrement();
 }
 
