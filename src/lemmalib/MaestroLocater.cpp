@@ -5,12 +5,15 @@
 #include <string.h>
 
 
-MaestroLocater::MaestroLocater( UDP& udpClient ) :
+MaestroLocater::MaestroLocater( UDP& udpClient, const char * lemmaId, const char * desiredRoomName ) :
     udpClient( udpClient )
+  , lemmaId(lemmaId)
+  , roomName(desiredRoomName)
   , port( 0 )
 {
   ip[0] = 0;
   restartingUDP = false;
+  lastBroadcastMillis = 0;
 }
 
 
@@ -27,30 +30,50 @@ void MaestroLocater::reset()
       udpClient.stop();
       delay(500);
       Serial.println("restart UDP listening");
-      udpClient.begin(1030);
+      udpClient.begin(0);
     }
   }
 }
 
 
 /* tryLocate() only attempts to get an UDP datagrame and parse IP:port from it, does not actually
- * attempt to connect to server (this is a non-blocking call that returns immediately), the 
- * connecting attempt is made by its caller, Lemma::tryConnectingWithMaestro() 
+ * attempt to connect to server (this is a non-blocking call that returns immediately), the
+ * connecting attempt is made by its caller, Lemma::tryConnectingWithMaestro()
  */
 void MaestroLocater::tryLocate()
 {
   ip[0] = 0;
   port = 0;
 
-  PRINT_FUNCTION_PREFIX;
-  Serial.print("try to parse UDP packet, remote IP: ");
-  Serial.print(udpClient.remoteIP());
-  Serial.print("  remote port: ");
-  Serial.println(udpClient.remotePort());
+  // PRINT_FUNCTION_PREFIX;
+  // Serial.print("try to parse UDP packet, remote IP: ");
+  // Serial.print(udpClient.remoteIP());
+  // Serial.print("  remote port: ");
+  // Serial.println(udpClient.remotePort());
 
-  /* udpClient is instance of EthernetUDP class, passed to constructor, the parsePacket() function 
-   * checks for the presence of a UDP packet, and reports the size. parsePacket() must be called 
-   * before reading the buffer with UDP.read(packetBuffer, MaxSize) 
+
+  // TODO: if we're overdue to broadcast another UDP
+  //       do that for every broadcast address on the device
+  // ["marco", "lemma_id", "Desired Room name", "spark", "1.1"]
+  if (millis() - lastBroadcastMillis > 2000) {
+    char message[RX_BUF_MAX_SIZE];
+    snprintf(message, RX_BUF_MAX_SIZE, "[\"marco\", \"%s\", \"%s\", \"spark\", \"1.1\"]", lemmaId, roomName);
+    Serial.print("Sending Marco: ");
+    Serial.println(message);
+
+    udpClient.beginPacket("255.255.255.255", 1030);
+    size_t sent = udpClient.write((uint8_t*)&message[0], strlen(message));
+    udpClient.endPacket();
+    lastBroadcastMillis = millis();
+    Serial.print("Bytes Sent: ");
+    Serial.println(sent);
+  }
+
+
+
+  /* udpClient is instance of EthernetUDP class, passed to constructor, the parsePacket() function
+   * checks for the presence of a UDP packet, and reports the size. parsePacket() must be called
+   * before reading the buffer with UDP.read(packetBuffer, MaxSize)
    */
   if( udpClient.parsePacket() )
   {
@@ -63,13 +86,14 @@ void MaestroLocater::tryLocate()
     Serial.print(packet);
     Serial.println();
 
+//TODO: use json parser to parse polo message
     int argumentsMatched = sscanf( packet, "[Maestro@%u]", &port );
     if( 1 == argumentsMatched && lastCharacterIsBracket( packet ))
     {
       PRINT_FUNCTION_PREFIX;
       Serial.println("captured valid UDP datagram");
 
-      /* [ATTENTION] 
+      /* [ATTENTION]
        * when ip[] is set, it is considered to have a valid maestro server,
        * but what if server connection is lost after a while? does it reset?
        */
@@ -92,8 +116,8 @@ void MaestroLocater::tryLocate()
     }
   }
   else {
-    PRINT_FUNCTION_PREFIX;
-    Serial.println("failed to parse UDP packet");
+    // PRINT_FUNCTION_PREFIX;
+    // Serial.println("failed to parse UDP packet");
   }
 }
 

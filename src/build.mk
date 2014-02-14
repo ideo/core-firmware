@@ -8,6 +8,7 @@ TARGET_SRC_PATH = src
 
 # Add include to all objects built for this target
 INCLUDE_DIRS += inc
+INCLUDE_DIRS += inc/lemmalib
 
 # C source files included in this build.
 CSRC +=

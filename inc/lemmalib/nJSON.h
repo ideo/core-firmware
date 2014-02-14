@@ -5,10 +5,10 @@
 #define nJSON__h
 
 
-#include "spark_wiring.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <cJson.h>
 
 
 #define nJSON_INT       0
@@ -19,6 +19,12 @@
 #define nJSON_ARRAY     5
 
 
+// #define nJSON_INT       cJSON_Number
+// #define nJSON_FLOAT     cJSON_Number
+// #define nJSON_DOUBLE    cJSON_Number
+// #define nJSON_STRING    cJSON_String
+// #define nJSON_BOOL      cJSON_True
+// #define nJSON_ARRAY     cJSON_Array
 class nJSON {
 public:
 	nJSON();
