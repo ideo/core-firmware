@@ -19,6 +19,10 @@ static void BlinkM_setRGB(byte addr, byte red, byte grn, byte blu);
 
 //NOAM:
 void commandHandler(Event const & e){
+  #if SERIAL_DEBUG
+  Serial.print("Noam topic received: "); Serial.println(e.name);
+  Serial.print("command data: "); Serial.println(e.stringValue);
+  #endif
  for(byte i=0; i<8; i++){
    serInStr[i] = e.stringValue[i];
  }
