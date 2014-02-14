@@ -11,12 +11,20 @@ MaestroLocater::MaestroLocater( UDP& udpClient, const char * lemmaId, const char
   , lemmaId(lemmaId)
   , roomName(desiredRoomName)
   , port( 0 )
+  , locating( false )
 {
   ip[0] = 0;
   restartingUDP = false;
   lastBroadcastMillis = 0;
 }
 
+void MaestroLocater::begin()
+{
+  ip[0] = 0;
+  port = 0;
+  udpClient.begin(1032);
+  locating = true;
+}
 
 void MaestroLocater::sendBroadcast()
 {
@@ -35,14 +43,12 @@ void MaestroLocater::sendBroadcast()
  */
 void MaestroLocater::tryLocate()
 {
-  ip[0] = 0;
-  port = 0;
+  if (!locating) { begin(); }
 
   if (millis() - lastBroadcastMillis > 2000) {
     sendBroadcast();
     lastBroadcastMillis = millis();
   }
-
 
 
   /* udpClient is instance of EthernetUDP class, passed to constructor, the parsePacket() function
@@ -65,11 +71,7 @@ void MaestroLocater::tryLocate()
       PRINT_FUNCTION_PREFIX;
       Serial.println("captured valid UDP datagram");
 
-      /* [ATTENTION]
-       * when ip[] is set, it is considered to have a valid maestro server,
-       * but what if server connection is lost after a while? does it reset?
-       */
-      IPAddress address = udpClient.remoteIP();
+      address = udpClient.remoteIP();
       sprintf( ip, "%d.%d.%d.%d", address[0], address[1], address[2], address[3] );
 
       PRINT_FUNCTION_PREFIX;
@@ -79,6 +81,7 @@ void MaestroLocater::tryLocate()
       Serial.print("port from UDP datagram: ");
       Serial.println(port);
       udpClient.stop();
+      locating = false;
     }
     else
     {
@@ -87,10 +90,6 @@ void MaestroLocater::tryLocate()
 
       port = 0;
     }
-  }
-  else {
-    // PRINT_FUNCTION_PREFIX;
-    // Serial.println("failed to parse UDP packet");
   }
 }
 
@@ -109,9 +108,8 @@ uint16_t MaestroLocater::maestroPort()
   return port;
 }
 
-bool MaestroLocater::lastCharacterIsBracket( char const * string )
+IPAddress MaestroLocater::maestroIpAddress()
 {
-  size_t length = strlen( string );
-  return string[ length-1 ] == ']';
+  return address;
 }
 

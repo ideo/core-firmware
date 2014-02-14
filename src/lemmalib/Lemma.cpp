@@ -43,7 +43,6 @@ void Lemma::begin(unsigned char mac[])
    * the Ethernet UDP library and network settings.
    */
 
-  udpClient.begin(1032);
   tryConnectingWithMaestro();
 }
 
@@ -64,13 +63,6 @@ void Lemma::tryConnectingWithMaestro()
   /* maestroConnection is of type EthernetClient, connected() is a built-in function */
   if( !maestroConnection.connected() )
   {
-    // PRINT_FUNCTION_PREFIX;
-    // Serial.println("Not Connected to Noam server");
-    // maestroConnection.stop();
-    // maestroLocater.reset();
-    // connected = false;
-
-    /* MaestroLocater::tryLocate() is non-blocking, only attempts to get IP:port from UDP datagram */
     maestroLocater.tryLocate();
 
     /* if IP is filled by MaestroLocater::tryLocate() call above, wasLocated() returns true */
@@ -96,18 +88,11 @@ void Lemma::tryConnectingWithMaestro()
         PRINT_FUNCTION_PREFIX;
         Serial.println("Connected to Noam server");
         connected = true;
-        Serial.println("stop UDP listening");
         /* messageSender is initialized in constructor, filer is of type EventFilter, the events
          * array in EventFilter was filled by the Lemma::hear() call when it calls the add() function
          * of EventFilter. The play array is empty, so the last 2 arguments are empty.
          */
         messageSender.sendRegistration( LISTEN_PORT, filter.events(), filter.count(), 0, 0 );
-      }
-      else
-      {
-        PRINT_FUNCTION_PREFIX;
-        Serial.println("Connection to Noam server failed.");
-        delay(2000);
       }
     }
   }

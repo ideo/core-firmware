@@ -15,17 +15,20 @@ private:
 public:
   MaestroLocater( UDP& udpClient, const char * lemmaId, const char * desiredRoomName );
 
+  void begin();
   void tryLocate();
   bool wasLocated();
   char const * maestroIp();
+  IPAddress maestroIpAddress();
   uint16_t maestroPort();
 
   bool restartingUDP;
 
 private:
   int lastBroadcastMillis;
-  bool lastCharacterIsBracket( char const * string );
   void sendBroadcast();
+  bool locating;
+  IPAddress address;
 
 };
 
