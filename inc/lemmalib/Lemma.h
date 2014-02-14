@@ -15,7 +15,7 @@ class Lemma
   public:
     Lemma( const char * id, const char * desiredRoomName );
 
-    void begin( unsigned char mac[] );
+    void begin( );
     void run();
     void hear( char const * name, handler_t callback );
     void sendEvent( char const * name, char const * value );
@@ -28,7 +28,7 @@ class Lemma
     void sendStringArray( char const * name, char ** array, int size );
 
   private:
-    void beginEthernet(unsigned char mac[]);
+    void displayIP();
     void tryConnectingWithMaestro();
     void handleIncomingConnections();
     void reset();

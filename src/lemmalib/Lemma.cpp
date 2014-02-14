@@ -15,7 +15,7 @@ Lemma::Lemma( const char * lemmaId, const char * desiredRoomName ) :
 {
 }
 
-void Lemma::beginEthernet(unsigned char mac[])
+void Lemma::displayIP()
 {
     PRINT_FUNCTION_PREFIX;
     Serial.print("IP address obtained: ");
@@ -25,9 +25,9 @@ void Lemma::beginEthernet(unsigned char mac[])
     connected = false;
 }
 
-void Lemma::begin(unsigned char mac[])
+void Lemma::begin()
 {
-  beginEthernet(mac);
+  displayIP();
 
   PRINT_FUNCTION_PREFIX;
   Serial.println("starting EthernetServer");

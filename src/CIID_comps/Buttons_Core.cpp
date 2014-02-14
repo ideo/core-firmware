@@ -7,12 +7,6 @@
 #define PART_ID PART_NAME PART_NUM
 #define DEBOUNCE 50
 #define SERIAL_DEBUG true
-/*
-Noam stuff: search "NOAM:" for places to fill in Noam functionality.
- */
-static byte MAC[] = { 
-  0x90, 0xA2, 0xDA, 0x0D, 0xA1, 0x55 };  // Network MAC address must be unique on network
-static const int UDP_port = 1030;
 
 #include "Bounce.h"
 const int button1Pin = A0;
@@ -37,7 +31,8 @@ Bounce button8( button8Pin , DEBOUNCE );
 Bounce button9( button9Pin , DEBOUNCE );
 Bounce button10( button10Pin , DEBOUNCE );
 
-Lemma lemma(PART_ID, ROOM_ID);  // Initialize the Arduino Noam Lemma with ID <PART_ID>
+// Initialize the lemma with the part and room names
+Lemma lemma(PART_ID, ROOM_ID);
 
 void hearTestCB(const Event& event){
   Serial.print("Heard event: ");
@@ -59,7 +54,7 @@ void setup(){
 
   //  NOAM: 
   lemma.hear("hearTest", hearTestCB);
-  lemma.begin( MAC ); // start listening on Noam network 1030
+  lemma.begin();
   
 #if SERIAL_DEBUG
   Serial.begin(9600);
