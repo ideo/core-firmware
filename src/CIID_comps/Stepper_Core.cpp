@@ -171,20 +171,67 @@ void loop()
  lemma.run();
 
   //Stepper 1 Handling
- if( jogMode1 ) stepper1.run();
- else stepper1.runSpeed();
+ if( jogMode1 ){
+   stepper1.run();
+ }
+ else{
+   stepper1.runSpeed();
+ }
  if( stepper1.distanceToGo() != 0 || !jogMode1 ){
   stepper1WasMoving = true;
-}
-if( millis() - step1PosTimer > TIMER_INTERVAL ){
+ }
+ if( millis() - step1PosTimer > TIMER_INTERVAL ){
   step1PosTimer = millis();
   if( stepper1WasMoving ){
 #define SPEAK_STRING "MotorPosition1_" PART_NUM
    lemma.sendEvent( SPEAK_STRING , stepper1.currentPosition());
+  }
+  if( stepper1.distanceToGo() == 0 && stepper1WasMoving ){
+   stepper1WasMoving = false;
+  }
  }
- if( stepper1.distanceToGo() == 0 && stepper1WasMoving ){
-  stepper1WasMoving = false;
-}
-}
+
+  //Stepper 2 Handling
+ if( jogMode2 ){
+   stepper2.run();
+ }
+ else{
+   stepper2.runSpeed();
+ }
+ if( stepper2.distanceToGo() != 0 || !jogMode2 ){
+  stepper2WasMoving = true;
+ }
+ if( millis() - step2PosTimer > TIMER_INTERVAL ){
+  step2PosTimer = millis();
+  if( stepper2WasMoving ){
+#define SPEAK_STRING "MotorPosition2_" PART_NUM
+   lemma.sendEvent( SPEAK_STRING , stepper2.currentPosition());
+  }
+  if( stepper2.distanceToGo() == 0 && stepper2WasMoving ){
+   stepper2WasMoving = false;
+  }
+ }
+
+   //Stepper 3 Handling
+ if( jogMode3 ){
+   stepper3.run();
+ }
+ else{
+   stepper3.runSpeed();
+ }
+ if( stepper3.distanceToGo() != 0 || !jogMode3 ){
+  stepper3WasMoving = true;
+ }
+ if( millis() - step3PosTimer > TIMER_INTERVAL ){
+  step3PosTimer = millis();
+  if( stepper3WasMoving ){
+#define SPEAK_STRING "MotorPosition3_" PART_NUM
+   lemma.sendEvent( SPEAK_STRING , stepper3.currentPosition());
+  }
+  if( stepper3.distanceToGo() == 0 && stepper3WasMoving ){
+   stepper3WasMoving = false;
+  }
+ }
+ 
 }
 
