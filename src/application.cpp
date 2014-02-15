@@ -40,7 +40,7 @@ boolean lastButtonState = LOW;
 
 const unsigned int DEBOUNCE = 100;
 unsigned long lastDebounceTime = millis();
-long startTime;
+unsigned long startTime;
 
 
 static int intArray[] = {
@@ -101,7 +101,6 @@ void setup() {
 void loop() {
 
   lemma.run();
-
   if (millis() - startTime > 100) {
 
 
@@ -118,8 +117,8 @@ void periodicalSend() {
 
     messageCounter++;
     messageCounter %= 60000;
-    // Serial.print("sendEvent #");
-    // Serial.println(messageCounter);
+    Serial.print("sendEvent #");
+    Serial.println(messageCounter);
     lemma.sendEvent( "buttonMessage" , messageCounter );
     lemma.sendEvent("buttonMessage", messageCounter);
 }

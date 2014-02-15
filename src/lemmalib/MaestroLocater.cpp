@@ -26,17 +26,21 @@ void MaestroLocater::begin()
   locating = true;
 }
 
+///Sends Marco
 void MaestroLocater::sendBroadcast()
 {
     char message[RX_BUF_MAX_SIZE];
     snprintf(message, RX_BUF_MAX_SIZE, "[\"marco\", \"%s\", \"%s\", \"spark\", \"1.1\"]", lemmaId, roomName);
-
-    udpClient.beginPacket("255.255.255.255", 1030);
+    IPAddress ipAddr( 255, 255, 255, 255 );
+    // Serial.print("beginPacket: ");Serial.println(udpClient.beginPacket("255.255.255.255", 1030));
+    Serial.print("beginPacket: ");Serial.println(udpClient.beginPacket(ipAddr , 1030));
 
     //TODO: remove
     Serial.print("marco broadcast: "); Serial.println(message);
 
     size_t sent = udpClient.write((uint8_t*)&message[0], strlen(message));
+    
+    Serial.print("write packet: "); Serial.println( sent );
     udpClient.endPacket();
 }
 
