@@ -136,6 +136,7 @@ fmtDouble(double val, byte precision, char *buf, unsigned bufLen)
 char * buildEvent( char const * name, int type, void const * value )
 {
   int intValue = 0;
+  long longValue = 0;
   float floatValue = 0.0;
   double doubleValue = 0.0;
   char *stringValue = NULL;
@@ -151,6 +152,10 @@ char * buildEvent( char const * name, int type, void const * value )
     case nJSON_INT:
       intValue = *((int *)value);
       sprintf(buf, "[\"event\", \"%s\", \"%s\", %d]", lemmaID, name, intValue);
+    break;
+    case nJSON_LONG:
+      longValue = *((long *)value);
+      sprintf(buf, "[\"event\", \"%s\", \"%s\", %d]", lemmaID, name, longValue);
     break;
     case nJSON_FLOAT:
       floatValue = *((float *)value);

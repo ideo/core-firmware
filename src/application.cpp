@@ -19,4 +19,5 @@
 // #include "CIID_Comps/Buttons_Core.cpp"
  // #include "CIID_Comps/BlinkM_Core.cpp"
  // #include "CIID_Comps/TempHumidity_Core.cpp"
- #include "CIID_Comps/PhotoItr_Core.cpp"
+ // #include "CIID_Comps/PhotoItr_Core.cpp"
+ #include "CIID_Comps/Stepper_Core.cpp"

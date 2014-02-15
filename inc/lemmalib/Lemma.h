@@ -21,6 +21,7 @@ class Lemma
     void sendEvent( char const * name, char const * value );
     void sendEvent( char const * name, int value );
     void sendEvent( char const * name, unsigned long value );
+    void sendEvent( char const * name, long value );
     void sendEvent( char const * name, double value );
     void sendEvent( char const * name, bool value );
     void sendIntArray( char const * name, int * array, int size );

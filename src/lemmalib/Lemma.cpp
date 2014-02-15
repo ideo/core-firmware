@@ -143,6 +143,18 @@ void Lemma::sendEvent( char const * name, unsigned long value )
   }
 }
 
+void Lemma::sendEvent( char const * name, long value )
+{
+  if (false == connected) {
+    return;
+  }
+
+  if (!messageSender.sendEvent( name, value ))
+  {
+    reset();
+  }
+}
+
 void Lemma::sendEvent( char const * name, double value )
 {
   if (false == connected) {

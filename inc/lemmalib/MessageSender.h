@@ -13,7 +13,8 @@ class MessageSender
     bool sendEvent( char const * name, char const * value );
     bool sendEvent( char const * name, int value );
     bool sendEvent( char const * name, double value );
-    bool sendEvent( char const * name, long unsigned int value );    
+    bool sendEvent( char const * name, long unsigned int value );
+    bool sendEvent( char const * name, long int value );    
     bool sendEvent( char const * name, void * array, int size, int elemType );
 
   private:

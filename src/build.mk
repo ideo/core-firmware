@@ -67,6 +67,7 @@ CPPSRC += $(TARGET_SRC_PATH)/lemmalib/MessageBuilder.cpp
 CPPSRC += $(TARGET_SRC_PATH)/lemmalib/TcpProtocol.cpp
 CPPSRC += $(TARGET_SRC_PATH)/lemmalib/Event.cpp
 CPPSRC += $(TARGET_SRC_PATH)/Bounce.cpp
+CPPSRC += $(TARGET_SRC_PATH)/AccelStepper.cpp
 
 # ASM source files included in this build.
 ASRC +=
