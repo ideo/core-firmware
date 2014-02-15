@@ -1,4 +1,3 @@
-#define ROOM_ID "evan test room"
 #define PART_NAME "BlinkM_Core_"
 #define PART_NUM "1"
 #define PART_ID PART_NAME PART_NUM

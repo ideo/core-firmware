@@ -10,7 +10,8 @@
  Author: Evan Shapiro [ IDEO ]
 
  */
-
+#define ROOM_ID "evan test room"
+ 
 #include "application.h"
 
 //switch comment below application to select Core Component source
