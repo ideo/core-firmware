@@ -17,6 +17,7 @@
 #define nJSON_STRING    3
 #define nJSON_BOOL      4
 #define nJSON_ARRAY     5
+#define nJSON_LONG      6
 
 
 // #define nJSON_INT       cJSON_Number

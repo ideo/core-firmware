@@ -77,6 +77,19 @@ bool MessageSender::sendEvent( char const * name, unsigned long int value )
   return result;
 }
 
+bool MessageSender::sendEvent( char const * name, long int value )
+{
+  PRINT_FUNCTION_PREFIX;
+  PRINTLN(value);
+  char* eventMessage = buildEvent(name, nJSON_LONG, &value);
+  PRINT_FUNCTION_PREFIX;
+  PRINT("eventMessage from unsigned long int: ");
+  PRINTLN(eventMessage);
+  bool result = sendMessage( eventMessage );
+  free( eventMessage );
+  return result;
+}
+
 bool MessageSender::sendEvent( char const * name, void * array, int size, int elemType )
 {
   PRINT_FUNCTION_PREFIX;

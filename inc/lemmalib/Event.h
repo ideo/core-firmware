@@ -8,6 +8,7 @@ class Event {
   int arrayElemType;
   char stringValue[128];
   int intValue;
+  long longValue;
   double floatValue;
   bool boolValue;
   void *array;
@@ -15,6 +16,7 @@ class Event {
   Event();
   Event( char const * name, char const * value );
   Event( char const * name, int value );
+  Event( char const * name, long value );
   Event( char const * name, double value );
   Event( char const * name, bool value );
   Event( char const * name, int * array, int size );
