@@ -31,8 +31,9 @@ void MaestroLocater::sendBroadcast()
 {
     char message[RX_BUF_MAX_SIZE];
     snprintf(message, RX_BUF_MAX_SIZE, "[\"marco\", \"%s\", \"%s\", \"spark\", \"1.1\"]", lemmaId, roomName);
-
-    udpClient.beginPacket("255.255.255.255", 1030);
+    Serial.println("Sending Marco message."); 
+    IPAddress ipAddr( 255 , 255 , 255 , 255 );
+    udpClient.beginPacket( ipAddr , 1030 );
     size_t totalSent = 0;
     int iter = 0;
     while(totalSent != strlen(message) && ++iter < 1000){

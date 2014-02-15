@@ -15,5 +15,5 @@
 
 //switch comment below application to select Core Component source
 
-// #include "CIID_Comps/Buttons_Core.cpp"
- #include "CIID_Comps/BlinkM_Core.cpp"
+#include "CIID_Comps/Buttons_Core.cpp"
+ // #include "CIID_Comps/BlinkM_Core.cpp"

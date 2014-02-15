@@ -25,7 +25,7 @@ public:
   bool restartingUDP;
 
 private:
-  int lastBroadcastMillis;
+  unsigned long lastBroadcastMillis;
   void sendBroadcast();
   bool locating;
   IPAddress address;
