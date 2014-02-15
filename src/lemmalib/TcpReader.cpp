@@ -10,7 +10,16 @@ TcpReader::TcpReader( TCPClient& client ) :
 char* TcpReader::read()
 {
   int length = readPayloadLength();
-  return readPayload( length );
+  char *ret = readPayload( length );
+  if ('0' == ret[0] &&
+      '[' == ret[6] &&
+      ']' == ret[strlen(ret)-1]) {
+    // Serial.print("invalid message: ");
+    // Serial.println(ret);
+    free(ret);
+    ret = NULL;
+  }
+  return ret;
 }
 
 

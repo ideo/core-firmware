@@ -210,9 +210,6 @@ void Lemma::handleIncomingConnections()
     return;
   }
 
-  static int counter = 0;
-  counter++;
-
   if (maestroConnection.connected()) {
     TCPClient incomingClient = server.available();
     if (incomingClient.sock() != MAX_SOCK_NUM) {
@@ -221,34 +218,20 @@ void Lemma::handleIncomingConnections()
       // Release the incoming client
       incomingClient.stop();
       if (message) {
-        Serial.print(counter);
-        Serial.print(" : RECEIVED: ");
-        Serial.println(message);
+        // Serial.print("RECEIVED: ");
+        // Serial.println(message);
+        Event const & event = MessageParser::parse( message );
+        filter.handle(event);
+        memset(message, 0, strlen(message)*sizeof(char));
         free(message);
       }
       else {
-        Serial.print(counter);
-        Serial.println(" : FAILED to read incoming data");
+        // Serial.println("FAILED to read incoming data");
       }
     }
   }
   else {
     connected = false;
   }
-
-  // TCPClient incomingClient = server.available();
-  // if( incomingClient == true )
-  // {
-  //   PRINT_FUNCTION_PREFIX;
-  //   Serial.println("incoming data available");
-  //   // TcpReader reader( incomingClient );
-  //   // char* message = reader.read();
-  //   // if (message != 0)
-  //   // {
-  //   //   Event const & event = MessageParser::parse( message );
-  //   //   filter.handle( event );
-  //   //   free( message );
-  //   // }
-  // }
 }
 
