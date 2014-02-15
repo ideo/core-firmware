@@ -10,15 +10,38 @@ TcpReader::TcpReader( TCPClient& client ) :
 char* TcpReader::read()
 {
   int length = readPayloadLength();
+
   char *ret = readPayload( length );
   if ('0' == ret[0] &&
       '[' == ret[6] &&
-      ']' == ret[strlen(ret)-1]) {
-    // Serial.print("invalid message: ");
-    // Serial.println(ret);
-    free(ret);
-    ret = NULL;
+      ']' == ret[strlen(ret)-1]) 
+  {
+    char *ptr = strstr(ret, "\",\"");
+    if (ptr && (ptr-ret) < strlen(ret)-3) 
+    {
+      /* attempt to patch up the corrupted message, the first 2 fields, "event" and "<sender name>"
+       * are not needed by callbacks, construct a message with dummy strings for these 2 fields
+       * while preserving the original event name and event value
+       */
+       ptr += 2;
+       char *dummy = "[\"event\",\"?\",";
+       int size = strlen(dummy) + strlen(ptr) + 1;
+       char *patch = (char *)malloc(size * sizeof(char));
+       memset(patch, 0, size);
+       memcpy(patch, dummy, strlen(dummy));
+       memcpy(patch + strlen(dummy), ptr, strlen(ptr));
+       free(ret);
+       ret = patch;
+       // Serial.print("patched message: ");
+       // Serial.println(ret);
+    }
+    else 
+    {
+      free(ret);
+      ret = NULL;
+    }
   }
+
   return ret;
 }
 
