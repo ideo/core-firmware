@@ -10,6 +10,7 @@ class MessageSender
   public:
     MessageSender( char const * SPALLA_ID, TCPClient& outboundClient );
     bool sendRegistration( int listenPort, char const ** hears, int hearsCount, char const ** plays, int playsCount );
+    bool sendHeartbeat();
     bool sendEvent( char const * name, char const * value );
     bool sendEvent( char const * name, int value );
     bool sendEvent( char const * name, double value );

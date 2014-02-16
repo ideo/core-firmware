@@ -31,12 +31,14 @@ class Lemma
   private:
     void displayIP();
     void tryConnectingWithMaestro();
-    void handleIncomingConnections();
+    void handleIncomingConnections();    
+    void testHeartbeat();
     void reset();
 
     static const uint16_t LISTEN_PORT = 9933;
 
     bool connected;
+    unsigned long heartbeatTimer;
     TCPServer server;
     TCPClient maestroConnection;
     UDP udpClient;

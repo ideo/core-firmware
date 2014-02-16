@@ -31,6 +31,7 @@
 #include "main.h"
 #include "spark_utilities.h"
 #include "spark_wiring_usbserial.h"
+
 extern "C" {
 #include "usb_conf.h"
 #include "usb_lib.h"

@@ -9,6 +9,7 @@ class MessageBuilder
   public:
   MessageBuilder( char const * spallaId );
   char * buildRegister( int port, char const** hears, int hearsSize, char const** plays, int playsSize ) const;
+  char * buildHeartbeat() const;
 };
 
 

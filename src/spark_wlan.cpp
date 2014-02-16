@@ -252,19 +252,20 @@ void Start_Smart_Config(void)
 /* WLAN Application related callbacks passed to wlan_init */
 void WLAN_Async_Callback(long lEventType, char *data, unsigned char length)
 {
+	//TODO: remove debug prints
 	switch (lEventType)
 	{
-		case HCI_EVNT_WLAN_ASYNC_SIMPLE_CONFIG_DONE:
+		case HCI_EVNT_WLAN_ASYNC_SIMPLE_CONFIG_DONE:			
 			WLAN_SMART_CONFIG_FINISHED = 1;
 			WLAN_SMART_CONFIG_STOP = 1;
 			WLAN_MANUAL_CONNECT = 0;
 			break;
 
-		case HCI_EVNT_WLAN_UNSOL_CONNECT:
+		case HCI_EVNT_WLAN_UNSOL_CONNECT:		
 			WLAN_CONNECTED = 1;
 			break;
 
-		case HCI_EVNT_WLAN_UNSOL_DISCONNECT:
+		case HCI_EVNT_WLAN_UNSOL_DISCONNECT:		
 			if(WLAN_CONNECTED)
 			{
 #if defined (USE_SPARK_CORE_V01)
@@ -317,18 +318,13 @@ void WLAN_Async_Callback(long lEventType, char *data, unsigned char length)
 			break;
 
 		case HCI_EVNT_BSD_TCP_CLOSE_WAIT:
+		//TODO: remove debug prints
+		// Serial.print("******HCI_EVNT_WLAN_UNSOL_DISCONNECT******    ");
 		    uint8_t socket = data[0];
+		    Serial.println(socket);
 		    if (socket < MAX_SOCK_NUM)
 		    {
-				wlan_sockets[socket] = true;
-				if(socket == sparkSocket)
-				{
-					SPARK_FLASH_UPDATE = 0;
-					SPARK_LED_FADE = 0;
-					SPARK_HANDSHAKE_COMPLETED = 0;
-					SPARK_SOCKET_CONNECTED = 0;
-					SPARK_WLAN_RESET = 1;
-				}
+				wlan_sockets[socket] = true;				
 		    }
 		    break;
 	}

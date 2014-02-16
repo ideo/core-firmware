@@ -24,6 +24,8 @@
  */
 
 #include "spark_wiring_tcpclient.h"
+//TODO: remove\/
+#include "spark_wiring_usbserial.h"
 
 uint16_t TCPClient::_srcport = 1024;
 
@@ -92,10 +94,13 @@ int TCPClient::connect(IPAddress ip, uint16_t port)
 	tSocketAddr.sa_data[4] = ip._address[2];
 	tSocketAddr.sa_data[5] = ip._address[3];
 
-	if(socket_connect(_sock, &tSocketAddr, sizeof(tSocketAddr)) < 0)
-	{
-		_sock = MAX_SOCK_NUM;
+	int socket_connect_try = socket_connect(_sock, &tSocketAddr, sizeof(tSocketAddr));
+	Serial.print("socket connect try: "); Serial.println( socket_connect_try );
+	Serial.print("_sock: "); Serial.println(_sock);
+	if( socket_connect_try < 0)
+	{		
 		wlan_sockets[_sock] = false;
+		_sock = MAX_SOCK_NUM;
 		return 0;
 	}
 
@@ -241,6 +246,10 @@ void TCPClient::stop()
 
 bool TCPClient::connected()
 {
+	//TODO: remove debug prints	
+	// Serial.print("_sock: "); Serial.println( _sock );
+	// Serial.print("wlan_sockets[_sock] == true: "); Serial.println( wlan_sockets[_sock] == true );
+
 	if((WLAN_DHCP != 1) || (_sock == MAX_SOCK_NUM))
 	{
 		return false;

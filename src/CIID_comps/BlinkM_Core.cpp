@@ -7,6 +7,8 @@
 Noam stuff: search "NOAM:" for places to fill in Noam functionality.
  */ 
 
+unsigned long heartBeatTimer = millis();
+
 char serInStr[8];
 Lemma lemma(PART_ID, ROOM_ID);  // Initialize the Arduino Noam Lemma with ID <PART_ID>
 
@@ -17,7 +19,7 @@ int toHex(char hi, char lo);
 static void BlinkM_setRGB(byte addr, byte red, byte grn, byte blu);
 
 //NOAM:
-void commandHandler(Event const & e){
+void commandHandler(const Event & e){
   #if SERIAL_DEBUG
   Serial.print("Noam topic received: "); Serial.println(e.name);
   Serial.print("command data: "); Serial.println(e.stringValue);
@@ -28,22 +30,28 @@ void commandHandler(Event const & e){
  parseCommand();
 }
 
-void setup(){
-  Wire.begin();
+void setup(){  
 #if SERIAL_DEBUG
   Serial.begin(9600);
   delay(50);
   scan();
-  Serial.println("initialized");  
+  Serial.println("Serial initialized.");
 #endif
+
+  Wire.begin();
+
   //  NOAM: 
-  #define hearString "colorCommand_" PART_NUM
+  #define hearString "colorCommand_" PART_NUM  
   lemma.hear( hearString , commandHandler );
   lemma.begin();
 }
 
 void loop(){  
   //NOAM: 
+  if(millis() - heartBeatTimer > 1000){
+    lemma.sendEvent( "sparkHeartbeat" , millis() );
+    heartBeatTimer = millis();
+  }
   lemma.run();
 #if SERIAL_DEBUG
   if( readSerialString() > 0){

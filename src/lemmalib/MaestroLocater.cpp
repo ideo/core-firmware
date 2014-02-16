@@ -6,6 +6,7 @@
 #include "MessageParser.h"
 #include <string.h>
 
+#define MARCO_PERIOD 2003
 
 MaestroLocater::MaestroLocater( UDP& udpClient, const char * lemmaId, const char * desiredRoomName ) :
     udpClient( udpClient )
@@ -31,7 +32,7 @@ void MaestroLocater::sendBroadcast()
 {
     char message[RX_BUF_MAX_SIZE];
     snprintf(message, RX_BUF_MAX_SIZE, "[\"marco\", \"%s\", \"%s\", \"spark\", \"1.1\"]", lemmaId, roomName);
-    Serial.println("Sending Marco message."); 
+    Serial.print("Sending Marco message: "); Serial.println( message ); 
     IPAddress ipAddr( 255 , 255 , 255 , 255 );
     udpClient.beginPacket( ipAddr , 1030 );
     size_t totalSent = 0;
@@ -51,7 +52,7 @@ void MaestroLocater::tryLocate()
 {
   if (!locating) { begin(); }
 
-  if (millis() - lastBroadcastMillis > 2000) {
+  if (millis() - lastBroadcastMillis > MARCO_PERIOD) {
     sendBroadcast();
     lastBroadcastMillis = millis();
   }

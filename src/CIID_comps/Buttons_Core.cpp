@@ -30,13 +30,13 @@ Bounce button10( button10Pin , DEBOUNCE );
 // Initialize the lemma with the part and room names
 Lemma lemma(PART_ID, ROOM_ID);
 
-void hearTestCB(const Event& event){
-  Serial.print("Heard event: ");
-  Serial.println(event.stringValue);
-}
-
-
 void setup(){
+  #if SERIAL_DEBUG
+  Serial.begin(9600);
+  delay(25);
+  Serial.println("serial initialized");
+#endif
+
   pinMode( button1Pin , INPUT_PULLUP );
   pinMode( button2Pin , INPUT_PULLUP );
   pinMode( button3Pin , INPUT_PULLUP );
@@ -48,15 +48,10 @@ void setup(){
   pinMode( button9Pin , INPUT_PULLUP );
   pinMode( button10Pin , INPUT_PULLUP );
 
-  //  NOAM: 
-  lemma.hear("hearTest", hearTestCB);
-  lemma.begin();
-  
-#if SERIAL_DEBUG
-  Serial.begin(9600);
-  delay(25);
-  Serial.println("initialized");
-#endif
+  Wire.begin();
+
+  //  NOAM:   
+  lemma.begin();  
 }
 
 void loop(){  
@@ -276,5 +271,3 @@ void loop(){
     //
   }
 }
-
-#endif

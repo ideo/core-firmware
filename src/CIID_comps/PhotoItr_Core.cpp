@@ -105,7 +105,7 @@ void setup(){
 #if SERIAL_DEBUG
   Serial.begin(9600);
   delay(50);
-  Serial.println("initialized");  
+  Serial.println("Serial initialized.");
 #endif
   delay(5);  
 

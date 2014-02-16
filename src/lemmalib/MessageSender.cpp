@@ -22,6 +22,14 @@ bool MessageSender::sendRegistration( int listenPort, char const ** hears, int h
   return result;
 }
 
+bool MessageSender::sendHeartbeat()
+{
+  char* heartbeatMessage = messageBuilder.buildHeartbeat();
+  bool result = sendMessage( heartbeatMessage );
+  free( heartbeatMessage );
+  return result;
+}
+
 bool MessageSender::sendEvent( char const * name, char const * value )
 {
   PRINT_FUNCTION_PREFIX;
@@ -105,11 +113,7 @@ bool MessageSender::sendEvent( char const * name, void * array, int size, int el
 }
 
 bool MessageSender::sendMessage( char const * message )
-{
-  PRINT_FUNCTION_PREFIX;
-  PRINT("send message: ");
-  PRINTLN(message);
-
+{  
   bool result = false;
   if( outboundClient.connected() )
   {

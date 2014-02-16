@@ -142,6 +142,7 @@ char * buildEvent( char const * name, int type, void const * value )
   char *stringValue = NULL;
   unsigned int boolValue = 0;
 
+  //TODO: send error if event data is too long for buffer
   char buf[256];
   memset(buf, 0, 256);
 
@@ -178,7 +179,7 @@ char * buildEvent( char const * name, int type, void const * value )
     break;
   }
 
-  /* [TODO] memory management */
+  /* [TODO:] memory management */
   return strdup(buf);
 }
 
@@ -288,5 +289,16 @@ char * MessageBuilder::buildRegister( int port, char const** hears, int hearsSiz
   string = strdup(buf);
 
   return string;
+}
+
+//Heartbeat message sent to server from spark to prevent TCP timeout
+char * MessageBuilder::buildHeartbeat() const
+{
+  char buf[256];
+  memset(buf, 0, 256);
+
+  sprintf(buf, "[\"heartbeat\", \"%s\"]", lemmaID);  
+
+  return strdup(buf);
 }
 
