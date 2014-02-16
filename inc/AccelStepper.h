@@ -166,11 +166,13 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <float.h>
 #include "spark_wiring.h"
 #include <inttypes.h>
+#include "spark_wiring_usbserial.h"
 
 // These defs cause trouble on some versions of Arduino
-#undef round
+// #undef round
 
 /////////////////////////////////////////////////////////////////////
 /// \class AccelStepper AccelStepper.h <AccelStepper.h>

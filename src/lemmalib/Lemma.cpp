@@ -6,7 +6,7 @@
 #include "TcpReader.h"
 #include "nJSON.h"
 
-#define HEARTBEAT_PERIOD 950
+#define HEARTBEAT_PERIOD 4950
 
 Lemma::Lemma( const char * lemmaId, const char * desiredRoomName ) :
 server( LISTEN_PORT )
@@ -24,7 +24,7 @@ void Lemma::displayIP()
   Serial.println(Network.localIP());
   Serial.print("on WiFi network: ");
   Serial.println(Network.SSID());
-  connected = false;
+  _connectedToHost = false;
 }
 
 void Lemma::begin()
@@ -51,6 +51,7 @@ void Lemma::begin()
  void Lemma::run()
  {
   /* both are actually periodic polls, instead of callbacks */
+  testConnection();
   tryConnectingWithMaestro();
   handleIncomingConnections();
   testHeartbeat();
@@ -61,11 +62,15 @@ void Lemma::hear(char const * name, handler_t callback)
   filter.add(name, callback);
 }
 
+void Lemma::testConnection(){
+  _connectedToHost = maestroConnection.connected();
+}
+
 void Lemma::tryConnectingWithMaestro()
 {
   /* maestroConnection is of type TCPClient, connected() is a built-in function */
   //TODO: remove debug prints
-  if( !maestroConnection.connected() )
+  if( !_connectedToHost )
   {    
     maestroLocater.tryLocate();
 
@@ -91,7 +96,7 @@ void Lemma::tryConnectingWithMaestro()
        {
         PRINT_FUNCTION_PREFIX;
         Serial.println("Connected to Noam host");
-        connected = true;
+        _connectedToHost = true;
         /* messageSender is initialized in constructor, filer is of type EventFilter, the events
          * array in EventFilter was filled by the Lemma::hear() call when it calls the add() function
          * of EventFilter. The play array is empty, so the last 2 arguments are empty.
@@ -113,7 +118,7 @@ void Lemma::tryConnectingWithMaestro()
 
 void Lemma::sendEvent( char const * name, char const * value )
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
@@ -125,7 +130,7 @@ void Lemma::sendEvent( char const * name, char const * value )
 
 void Lemma::sendEvent( char const * name, int value )
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
@@ -137,7 +142,7 @@ void Lemma::sendEvent( char const * name, int value )
 
 void Lemma::sendEvent( char const * name, unsigned long value )
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
@@ -149,7 +154,7 @@ void Lemma::sendEvent( char const * name, unsigned long value )
 
 void Lemma::sendEvent( char const * name, long value )
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
@@ -161,7 +166,7 @@ void Lemma::sendEvent( char const * name, long value )
 
 void Lemma::sendEvent( char const * name, double value )
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
@@ -173,7 +178,7 @@ void Lemma::sendEvent( char const * name, double value )
 
 void Lemma::sendEvent( char const * name, bool value )
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
@@ -185,7 +190,7 @@ void Lemma::sendEvent( char const * name, bool value )
 
 void Lemma::sendIntArray( char const * name, int * array, int size )
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
@@ -197,7 +202,7 @@ void Lemma::sendIntArray( char const * name, int * array, int size )
 
 void Lemma::sendDoubleArray( char const * name, double * array, int size )
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
@@ -209,7 +214,7 @@ void Lemma::sendDoubleArray( char const * name, double * array, int size )
 
 void Lemma::sendStringArray( char const * name, char ** array, int size )
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
@@ -222,11 +227,11 @@ void Lemma::sendStringArray( char const * name, char ** array, int size )
 
 void Lemma::handleIncomingConnections()
 {
-  if (false == connected) {
+  if (false == _connectedToHost) {
     return;
   }
 
-  if (maestroConnection.connected()) {
+  if ( _connectedToHost ) {
     TCPClient incomingClient = server.available();
     if (incomingClient.sock() != MAX_SOCK_NUM) {
       TcpReader reader( incomingClient );
@@ -245,14 +250,11 @@ void Lemma::handleIncomingConnections()
         Serial.println("FAILED to read TCP, max_sock_num");
       }
     }
-  }
-  else {
-    connected = false;
-  }
+  }  
 }
 
 void Lemma::testHeartbeat(){
-  if( false == connected ){
+  if( false == _connectedToHost ){
     return;
   }
   if( millis() - heartbeatTimer > HEARTBEAT_PERIOD ){
@@ -262,7 +264,7 @@ void Lemma::testHeartbeat(){
     Serial.print("heartbeat: "); Serial.print(millis()); Serial.print(" ok?: "); Serial.println(result);   
     if( !result ){
       Serial.println("Lost heartbeat connection to server");
-      connected = false;    
+      _connectedToHost = false;    
       maestroConnection.stop();
     }
   }

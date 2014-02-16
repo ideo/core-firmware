@@ -33,11 +33,12 @@ class Lemma
     void tryConnectingWithMaestro();
     void handleIncomingConnections();    
     void testHeartbeat();
+    void testConnection();
     void reset();
 
     static const uint16_t LISTEN_PORT = 9933;
 
-    bool connected;
+    bool _connectedToHost;
     unsigned long heartbeatTimer;
     TCPServer server;
     TCPClient maestroConnection;

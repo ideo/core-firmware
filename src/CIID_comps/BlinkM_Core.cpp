@@ -7,7 +7,7 @@
 Noam stuff: search "NOAM:" for places to fill in Noam functionality.
  */ 
 
-unsigned long heartBeatTimer = millis();
+long int receivedCount = 0;
 
 char serInStr[8];
 Lemma lemma(PART_ID, ROOM_ID);  // Initialize the Arduino Noam Lemma with ID <PART_ID>
@@ -21,8 +21,10 @@ static void BlinkM_setRGB(byte addr, byte red, byte grn, byte blu);
 //NOAM:
 void commandHandler(const Event & e){
   #if SERIAL_DEBUG
-  Serial.print("Noam topic received: "); Serial.println(e.name);
-  Serial.print("command data: "); Serial.println(e.stringValue);
+  // Serial.print("Noam topic received: "); Serial.println(e.name);
+  // Serial.print("command data: "); Serial.println(e.stringValue);
+  receivedCount++;
+  Serial.print("Received: "); Serial.println(receivedCount);
   #endif
  for(byte i=0; i<8; i++){
    serInStr[i] = e.stringValue[i];
@@ -47,11 +49,7 @@ void setup(){
 }
 
 void loop(){  
-  //NOAM: 
-  if(millis() - heartBeatTimer > 1000){
-    lemma.sendEvent( "sparkHeartbeat" , millis() );
-    heartBeatTimer = millis();
-  }
+  //NOAM:   
   lemma.run();
 #if SERIAL_DEBUG
   if( readSerialString() > 0){
@@ -111,14 +109,14 @@ void parseCommand(){
     BlinkM_setRGB(_addr, _red, _green, _blue);
 
 #if SERIAL_DEBUG    
-    Serial.print("addr: "); 
-    Serial.println(_addr);
-    Serial.print("red: "); 
-    Serial.println(_red);
-    Serial.print("green: "); 
-    Serial.println(_green);
-    Serial.print("blue: "); 
-    Serial.println(_blue);    
+    // Serial.print("addr: "); 
+    // Serial.println(_addr);
+    // Serial.print("red: "); 
+    // Serial.println(_red);
+    // Serial.print("green: "); 
+    // Serial.println(_green);
+    // Serial.print("blue: "); 
+    // Serial.println(_blue);    
 #endif
   }
   serInStr[0] = 0;

@@ -31,13 +31,14 @@ uint16_t TCPClient::_srcport = 1024;
 
 TCPClient::TCPClient() : _sock(MAX_SOCK_NUM)
 {
+	
 }
 
 TCPClient::TCPClient(uint8_t sock) : _sock(sock) 
 {
 	_offset = 0;
 	_remaining = 0;
-	_buffered = 0;
+	_buffered = 0;	
 }
 
 int TCPClient::connect(const char* host, uint16_t port) 

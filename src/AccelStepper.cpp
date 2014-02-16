@@ -101,6 +101,9 @@ void AccelStepper::computeNewSpeed()
     long distanceTo = distanceToGo(); // +ve is clockwise from curent location
 
     long stepsToStop = (long)((_speed * _speed) / (2.0 * _acceleration)); // Equation 16
+    Serial.println(stepsToStop);
+
+    // long stepsToStop = 0;
 
     if (distanceTo == 0 && stepsToStop <= 1)
     {
@@ -165,7 +168,7 @@ void AccelStepper::computeNewSpeed()
     if (_direction == DIRECTION_CCW)
 	_speed = -_speed;
 
-#if 0
+#if 1
     Serial.println(_speed);
     Serial.println(_acceleration);
     Serial.println(_cn);
@@ -277,7 +280,7 @@ void AccelStepper::setAcceleration(float acceleration)
 	// Recompute _n per Equation 17
 	_n = _n * (_acceleration / acceleration);
 	// New c0 per Equation 7
-	_c0 = pow( (2.0 / acceleration) * 1000000.0 , .5 );
+	_c0 = powf( (2.0 / acceleration) * 1000000.0 , .5 );
 	_acceleration = acceleration;
 	computeNewSpeed();
     }
@@ -292,7 +295,8 @@ void AccelStepper::setSpeed(float speed)
 	_stepInterval = 0;
     else
     {
-	_stepInterval = abs(1000000.0 / speed);
+	_stepInterval = (1000000.0 / speed);
+    if( _stepInterval < 0 ) _stepInterval = -_stepInterval;
 	_direction = (speed > 0.0) ? DIRECTION_CW : DIRECTION_CCW;
     }
     _speed = speed;

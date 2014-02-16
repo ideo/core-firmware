@@ -74,8 +74,8 @@ void TcpReader::readBlocked( char* destination, int length )
   int readResult = 0;
   while( bytesRead != length )
   {
-    readResult = client.read( (uint8_t*) destination + bytesRead, length - bytesRead );
-    if(readResult < 0){
+    readResult = client.read( (uint8_t*) destination + bytesRead, length - bytesRead );    
+    if(readResult < 0){      
       if(!client.available()){
         // The client.available() is responsible for fetching the amount left on buffer
         // Without this call the read will return 0 waiting for more causing this to hang.
