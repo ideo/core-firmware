@@ -78,7 +78,7 @@ void Set_NetApp_Timeout(void)
 	unsigned long aucDHCP = 14400;
 	unsigned long aucARP = 3600;
 	unsigned long aucKeepalive = 10;
-	unsigned long aucInactivity = 60;
+	unsigned long aucInactivity = 20;
 
 	netapp_timeout_values(&aucDHCP, &aucARP, &aucKeepalive, &aucInactivity);
 }
@@ -319,9 +319,9 @@ void WLAN_Async_Callback(long lEventType, char *data, unsigned char length)
 
 		case HCI_EVNT_BSD_TCP_CLOSE_WAIT:
 		//TODO: remove debug prints
-		// Serial.print("******HCI_EVNT_WLAN_UNSOL_DISCONNECT******    ");
+		Serial.print("******HCI_EVNT_WLAN_UNSOL_DISCONNECT******    ");
 		    uint8_t socket = data[0];
-		    Serial.println(socket);
+		    Serial.print("    socket: ");Serial.println(socket);
 		    if (socket < MAX_SOCK_NUM)
 		    {
 				wlan_sockets[socket] = true;				

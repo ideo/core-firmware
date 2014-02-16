@@ -94,10 +94,7 @@ int TCPClient::connect(IPAddress ip, uint16_t port)
 	tSocketAddr.sa_data[4] = ip._address[2];
 	tSocketAddr.sa_data[5] = ip._address[3];
 
-	int socket_connect_try = socket_connect(_sock, &tSocketAddr, sizeof(tSocketAddr));
-	Serial.print("socket connect try: "); Serial.println( socket_connect_try );
-	Serial.print("_sock: "); Serial.println(_sock);
-	if( socket_connect_try < 0)
+	if( socket_connect(_sock, &tSocketAddr, sizeof(tSocketAddr) < 0) )
 	{		
 		wlan_sockets[_sock] = false;
 		_sock = MAX_SOCK_NUM;
@@ -237,7 +234,7 @@ void TCPClient::stop()
 	}
 
 	//Delay 100ms to prevent CC3000 freeze
-	delay(100);
+	// delay(100);
 
 	closesocket(_sock);
 
@@ -245,11 +242,7 @@ void TCPClient::stop()
 }
 
 bool TCPClient::connected()
-{
-	//TODO: remove debug prints	
-	// Serial.print("_sock: "); Serial.println( _sock );
-	// Serial.print("wlan_sockets[_sock] == true: "); Serial.println( wlan_sockets[_sock] == true );
-
+{		
 	if((WLAN_DHCP != 1) || (_sock == MAX_SOCK_NUM))
 	{
 		return false;
@@ -258,8 +251,8 @@ bool TCPClient::connected()
 	//wlan_sockets[] set using HCI_EVNT_BSD_TCP_CLOSE_WAIT Async event in spark_wlan.cpp
 	if ((!available()) && (wlan_sockets[_sock] == true))
 	{
-		stop();
 		wlan_sockets[_sock] = false;
+		stop();
 		return false;
 	}
 

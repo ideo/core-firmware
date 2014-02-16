@@ -257,11 +257,12 @@ void Lemma::testHeartbeat(){
   }
   if( millis() - heartbeatTimer > HEARTBEAT_PERIOD ){
     heartbeatTimer = millis();
-    bool result = messageSender.sendHeartbeat();    
+    bool result = messageSender.sendHeartbeat();
+    //TODO: remove debug
+    Serial.print("heartbeat: "); Serial.print(millis()); Serial.print(" ok?: "); Serial.println(result);   
     if( !result ){
-
-      connected = false;
-    //TODO: kill TCP client?
+      Serial.println("Lost heartbeat connection to server");
+      connected = false;    
       maestroConnection.stop();
     }
   }
