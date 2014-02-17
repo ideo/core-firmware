@@ -4,7 +4,7 @@
  * @author  Satish Nair
  * @version V1.0.0
  * @date    10-Nov-2013
- * @brief   
+ * @brief
  ******************************************************************************
   Copyright (c) 2013 Spark Labs, Inc.  All rights reserved.
 
@@ -31,17 +31,17 @@ uint16_t TCPClient::_srcport = 1024;
 
 TCPClient::TCPClient() : _sock(MAX_SOCK_NUM)
 {
-	
+
 }
 
-TCPClient::TCPClient(uint8_t sock) : _sock(sock) 
+TCPClient::TCPClient(uint8_t sock) : _sock(sock)
 {
 	_offset = 0;
 	_remaining = 0;
-	_buffered = 0;	
+	_buffered = 0;
 }
 
-int TCPClient::connect(const char* host, uint16_t port) 
+int TCPClient::connect(const char* host, uint16_t port)
 {
 	uint32_t ip_addr = 0;
 
@@ -62,7 +62,7 @@ int TCPClient::reconnect()
 }
 
 
-int TCPClient::connect(IPAddress ip, uint16_t port) 
+int TCPClient::connect(IPAddress ip, uint16_t port)
 {
 	previousIP = ip;
 	previousPort = port;
@@ -96,7 +96,7 @@ int TCPClient::connect(IPAddress ip, uint16_t port)
 	tSocketAddr.sa_data[5] = ip._address[3];
 
 	if( socket_connect(_sock, &tSocketAddr, sizeof(tSocketAddr) < 0) )
-	{		
+	{
 		wlan_sockets[_sock] = false;
 		_sock = MAX_SOCK_NUM;
 		return 0;
@@ -105,7 +105,7 @@ int TCPClient::connect(IPAddress ip, uint16_t port)
 	return 1;
 }
 
-size_t TCPClient::write(uint8_t b) 
+size_t TCPClient::write(uint8_t b)
 {
 	return write(&b, 1);
 }
@@ -120,7 +120,7 @@ size_t TCPClient::write(const uint8_t *buffer, size_t size)
 	return send(_sock, buffer, size, 0);
 }
 
-int TCPClient::available() 
+int TCPClient::available()
 {
 	if((WLAN_DHCP != 1) || (_sock == MAX_SOCK_NUM))
 	{
@@ -160,7 +160,7 @@ int TCPClient::available()
 	return 0;
 }
 
-int TCPClient::read() 
+int TCPClient::read()
 {
 	if((WLAN_DHCP != 1) || (_sock == MAX_SOCK_NUM))
 	{
@@ -190,12 +190,12 @@ int TCPClient::read(uint8_t *buffer, size_t size)
 	{
 		if (_remaining <= size)
 		{
-			memcpy(buffer, _buffer, _remaining);
+			memcpy(buffer, &_buffer[_offset], _remaining);
 			_offset = _remaining;
 		}
 		else
 		{
-			memcpy(buffer, _buffer, size);
+			memcpy(buffer, &_buffer[_offset], size);
 			_offset = size;
 		}
 
@@ -209,7 +209,7 @@ int TCPClient::read(uint8_t *buffer, size_t size)
 	return -1;
 }
 
-int TCPClient::peek() 
+int TCPClient::peek()
 {
 	if (!available())
 	{
@@ -219,7 +219,7 @@ int TCPClient::peek()
 	return read();
 }
 
-void TCPClient::flush() 
+void TCPClient::flush()
 {
 	while (available())
 	{
@@ -227,7 +227,7 @@ void TCPClient::flush()
 	}
 }
 
-void TCPClient::stop() 
+void TCPClient::stop()
 {
 	if((WLAN_DHCP != 1) || (_sock == MAX_SOCK_NUM))
 	{
@@ -243,7 +243,7 @@ void TCPClient::stop()
 }
 
 bool TCPClient::connected()
-{		
+{
 	if((WLAN_DHCP != 1) || (_sock == MAX_SOCK_NUM))
 	{
 		return false;

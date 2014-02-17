@@ -10,39 +10,7 @@ TcpReader::TcpReader( TCPClient& client ) :
 char* TcpReader::read()
 {
   int length = readPayloadLength();
-
-  char *ret = readPayload( length );
-  if ('0' == ret[0] &&
-      '[' == ret[6] &&
-      ']' == ret[strlen(ret)-1]) 
-  {
-    char *ptr = strstr(ret, "\",\"");
-    if (ptr && (ptr-ret) < strlen(ret)-3) 
-    {
-      /* attempt to patch up the corrupted message, the first 2 fields, "event" and "<sender name>"
-       * are not needed by callbacks, construct a message with dummy strings for these 2 fields
-       * while preserving the original event name and event value
-       */
-       ptr += 2;
-       char *dummy = "[\"event\",\"?\",";
-       int size = strlen(dummy) + strlen(ptr) + 1;
-       char *patch = (char *)malloc(size * sizeof(char));
-       memset(patch, 0, size);
-       memcpy(patch, dummy, strlen(dummy));
-       memcpy(patch + strlen(dummy), ptr, strlen(ptr));
-       free(ret);
-       ret = patch;
-       // Serial.print("patched message: ");
-       // Serial.println(ret);
-    }
-    else 
-    {
-      free(ret);
-      ret = NULL;
-    }
-  }
-
-  return ret;
+  return readPayload( length );
 }
 
 
@@ -74,8 +42,8 @@ void TcpReader::readBlocked( char* destination, int length )
   int readResult = 0;
   while( bytesRead != length )
   {
-    readResult = client.read( (uint8_t*) destination + bytesRead, length - bytesRead );    
-    if(readResult < 0){      
+    readResult = client.read( (uint8_t*) destination + bytesRead, length - bytesRead );
+    if(readResult < 0){
       if(!client.available()){
         // The client.available() is responsible for fetching the amount left on buffer
         // Without this call the read will return 0 waiting for more causing this to hang.
