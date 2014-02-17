@@ -1,8 +1,7 @@
 #define PART_NAME "TH_Core_"
-#define PART_NUM "1"
 #define PART_ID PART_NAME PART_NUM
 #define POLL_PERIOD 500
-#define SERIAL_DEBUG 0
+
 
 /*
 Noam stuff: search "NOAM:" for places to fill in Noam functionality.

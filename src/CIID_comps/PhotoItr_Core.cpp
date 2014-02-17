@@ -1,8 +1,6 @@
 #define PART_NAME "PhotoItr_Core_"
-#define PART_NUM "1"
 #define PART_ID PART_NAME PART_NUM
 #define DEBOUNCE 25
-#define SERIAL_DEBUG true
 
 #include "Bounce.h"
 
