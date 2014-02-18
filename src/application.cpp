@@ -10,7 +10,7 @@
  Author: Evan Shapiro [ IDEO ]
 
  */
-#define ROOM_ID "evan test room"
+#define ROOM_ID "chomskynet"
 
 #include "application.h"
 

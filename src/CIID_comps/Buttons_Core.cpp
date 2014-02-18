@@ -29,6 +29,12 @@ Bounce button10( button10Pin , DEBOUNCE );
 
 // Initialize the lemma with the part and room names
 Lemma lemma(PART_ID, ROOM_ID);
+bool received = false;
+int count = 0;
+void hearProcessingMessage(const Event& event){
+  int receviedNum = event.intValue;
+  received = true;
+}
 
 void setup(){
   #if SERIAL_DEBUG
@@ -50,7 +56,8 @@ void setup(){
 
   Wire.begin();
 
-  //  NOAM:   
+  //  NOAM: 
+  lemma.hear("processingSend", hearProcessingMessage);  
   lemma.begin();  
 }
 
@@ -58,6 +65,12 @@ void loop(){
   
   //NOAM: 
   lemma.run();
+
+  if(received){
+    received = false;
+    count++;
+    lemma.sendEvent("receivedProcessing", count);
+  }
   //
 
   button1.update();

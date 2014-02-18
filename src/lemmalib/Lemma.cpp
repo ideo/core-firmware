@@ -233,7 +233,7 @@ void Lemma::handleIncomingConnections()
 
   if ( _connectedToHost ) {
     TCPClient incomingClient = server.available();
-    if (incomingClient.sock() != MAX_SOCK_NUM) {
+    if( incomingClient.available() ) {
       TcpReader reader( incomingClient );
       char* message = reader.read();
       // Release the incoming client

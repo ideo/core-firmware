@@ -119,10 +119,11 @@ bool MessageSender::sendMessage( char const * message )
   {
     char* encoded = TcpProtocol::encode( message );
     int sent = outboundClient.print( encoded );
-    outboundClient.flush();
+    //outboundClient.flush();
     result = (sent == strlen(encoded));
 
     free( encoded );
+    delay(10);
   }
   return result;
 }
