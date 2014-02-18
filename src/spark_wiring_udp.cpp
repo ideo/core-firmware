@@ -4,7 +4,7 @@
  * @author  Satish Nair
  * @version V1.0.0
  * @date    13-Nov-2013
- * @brief   
+ * @brief
  ******************************************************************************
   Copyright (c) 2013 Spark Labs, Inc.  All rights reserved.
   Copyright (c) 2008 Bjoern Hartmann
@@ -31,7 +31,7 @@ UDP::UDP() : _sock(MAX_SOCK_NUM)
 
 }
 
-uint8_t UDP::begin(uint16_t port) 
+uint8_t UDP::begin(uint16_t port)
 {
 	sockaddr tUDPAddr;
 
@@ -64,7 +64,7 @@ uint8_t UDP::begin(uint16_t port)
 	return 1;
 }
 
-int UDP::available() 
+int UDP::available()
 {
 	return _remaining;
 }
@@ -128,6 +128,11 @@ size_t UDP::write(const uint8_t *buffer, size_t size)
 
 int UDP::parsePacket()
 {
+	if((WLAN_DHCP != 1) || (_sock == MAX_SOCK_NUM))
+	{
+		return 0;
+	}
+
 	_types_fd_set_cc3000 readSet;
 	timeval timeout;
 
@@ -184,12 +189,12 @@ int UDP::read(unsigned char* buffer, size_t len)
 	{
 		if (_remaining <= len)
 		{
-			memcpy(buffer, _buffer, _remaining);
+			memcpy(buffer, &_buffer[_offset], _remaining);
 			_offset = _remaining;
 		}
 		else
 		{
-			memcpy(buffer, _buffer, len);
+			memcpy(buffer, &_buffer[_offset], len);
 			_offset = len;
 		}
 
