@@ -235,7 +235,7 @@ void TCPClient::stop()
 	}
 
 	//Delay 100ms to prevent CC3000 freeze
-	// delay(100);
+	delay(10);
 
 	closesocket(_sock);
 
