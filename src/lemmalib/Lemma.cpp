@@ -79,20 +79,14 @@ void Lemma::tryConnectingWithMaestro()
     {
       PRINT_FUNCTION_PREFIX;
       Serial.println("host located");
-      // srand(1);
-      // delay(rand()%1000);
-      // char const * ip = maestroLocater.maestroIp();
-      // unsigned int port = maestroLocater.maestroPort();
+      char const * ip = maestroLocater.maestroIp();
+      unsigned int port = maestroLocater.maestroPort();
       PRINT_FUNCTION_PREFIX;
       Serial.print("Connecting to Noam host @ ");
-      Serial.print( udpClient.remoteIP() );
+      Serial.print( ip );
       Serial.print( ":" );
-      Serial.println( 7733 );
-      /* maestroConnection is of type EthernetClient, connect() is a built-in function, connects to
-       * a specified IP address and port. The return value indicates success or failure. Also
-       * supports DNS lookups when using a domain name. Returns true if the connection succeeds.
-       */
-       if( maestroConnection.connect( udpClient.remoteIP(), 7733 ) )
+      Serial.println( port );
+       if( maestroConnection.connect( ip, port ) )
        {
         PRINT_FUNCTION_PREFIX;
         Serial.println("Connected to Noam host");
