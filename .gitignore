@@ -18,6 +18,9 @@
 
 # Build folder files
 Build/*.log
+build/*.hex
+build/*.elf
+build/*.bin
 
 # Debug folder
 Debug/*

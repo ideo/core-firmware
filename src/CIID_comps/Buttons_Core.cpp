@@ -46,8 +46,6 @@ void setup(){
   pinMode( button9Pin , INPUT_PULLUP );
   pinMode( button10Pin , INPUT_PULLUP );
 
-  Wire.begin();
-
   //  NOAM:   
   lemma.begin();  
 }

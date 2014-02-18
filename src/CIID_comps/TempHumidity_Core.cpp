@@ -43,7 +43,7 @@ void loop()
     dataArray[0] = RH;
     dataArray[1] = T_C;   
 
-    #define topicID "TempHumid " PART_NUM
+    #define topicID "TempHumid_" PART_NUM
 
     #if SERIAL_DEBUG
     Serial.print(topicID);Serial.print("  ");Serial.print(dataArray[0]);Serial.print(" ");Serial.println(dataArray[1]);
