@@ -32,15 +32,15 @@ void MaestroLocater::sendBroadcast()
 {
     char message[RX_BUF_MAX_SIZE];
     snprintf(message, RX_BUF_MAX_SIZE, "[\"marco\", \"%s\", \"%s\", \"spark\", \"1.1\"]", lemmaId, roomName);
-    Serial.print("Sending Marco message: "); Serial.println( message ); 
+    Serial.print("Sending Marco message: "); Serial.println( message );
     IPAddress ipAddr( 255 , 255 , 255 , 255 );
     udpClient.beginPacket( ipAddr , 1030 );
     size_t totalSent = 0;
     int iter = 0;
-    while(totalSent != strlen(message) && ++iter < 1000){
-      totalSent += udpClient.write((uint8_t*)&message[totalSent], strlen(message) - totalSent);
+    size_t messageSize = strlen(message);
+    while(totalSent != messageSize && ++iter < 5) {
+      totalSent = udpClient.write((uint8_t*)message, messageSize);
     }
-    udpClient.endPacket();
 }
 
 
@@ -52,11 +52,12 @@ void MaestroLocater::tryLocate()
 {
   if (!locating) { begin(); }
 
-  if (millis() - lastBroadcastMillis > MARCO_PERIOD) {
+  unsigned long currentMillis = millis();
+  if (currentMillis - lastBroadcastMillis > MARCO_PERIOD || currentMillis < lastBroadcastMillis)
+  {
     sendBroadcast();
-    lastBroadcastMillis = millis();
+    lastBroadcastMillis = currentMillis;
   }
-
 
   /* udpClient is instance of EthernetUDP class, passed to constructor, the parsePacket() function
    * checks for the presence of a UDP packet, and reports the size. parsePacket() must be called
@@ -93,7 +94,6 @@ void MaestroLocater::tryLocate()
     {
       PRINT_FUNCTION_PREFIX;
       Serial.println("not a valid UDP datagram from Noam server broadcast");
-
       port = 0;
     }
     udpClient.stop();
