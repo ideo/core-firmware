@@ -113,13 +113,12 @@ bool MessageSender::sendEvent( char const * name, void * array, int size, int el
 }
 
 bool MessageSender::sendMessage( char const * message )
-{  
+{
   bool result = false;
   if( outboundClient.connected() )
   {
     char* encoded = TcpProtocol::encode( message );
     int sent = outboundClient.print( encoded );
-    outboundClient.flush();
     result = (sent == strlen(encoded));
 
     free( encoded );
