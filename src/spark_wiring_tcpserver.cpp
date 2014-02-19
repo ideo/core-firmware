@@ -25,6 +25,7 @@
 
 #include "spark_wiring_tcpclient.h"
 #include "spark_wiring_tcpserver.h"
+#include "spark_wiring_usbserial.h"
 
 TCPServer::TCPServer(uint16_t port) : _port(port), _sock(MAX_SOCK_NUM), _client(MAX_SOCK_NUM)
 {
@@ -53,22 +54,32 @@ void TCPServer::begin()
 
 	if (sock < 0)
 	{
+		Serial.print("Sock:");
+		Serial.println(sock);
 		return;
 	}
 
-	if (setsockopt(sock, SOL_SOCKET, SOCKOPT_ACCEPT_NONBLOCK, SOCK_ON, sizeof(SOCK_ON)) < 0)
+	int res = setsockopt(sock, SOL_SOCKET, SOCKOPT_ACCEPT_NONBLOCK, SOCK_ON, sizeof(SOCK_ON));
+	if (res < 0)
 	{
+		Serial.print("setsockopt: ");
+		Serial.println(res);
 		return;
 	}
 
-
-	if (bind(sock, (sockaddr*)&tServerAddr, sizeof(tServerAddr)) < 0)
+	int bres = bind(sock, (sockaddr*)&tServerAddr, sizeof(tServerAddr));
+	if (bres < 0)
 	{
+		Serial.print("bind: ");
+		Serial.println(bres);
 		return;
 	}
 
-	if (listen(sock, 0) < 0)
+	int blis = listen(sock, 0);
+	if (blis < 0)
 	{
+		Serial.print("list:");
+		Serial.println(blis);
 		return;
 	}
 
@@ -93,7 +104,6 @@ TCPClient TCPServer::available()
 	socklen_t tAddrLen = sizeof(tClientAddr);
 
 	int sock = accept(_sock, (sockaddr*)&tClientAddr, &tAddrLen);
-
 	if (sock < 0)
 	{
 		_client = TCPClient(MAX_SOCK_NUM);

@@ -6,7 +6,7 @@
 #include "TcpReader.h"
 #include "nJSON.h"
 
-#define HEARTBEAT_PERIOD 4950
+#define HEARTBEAT_PERIOD 24950
 
 Lemma::Lemma( const char * lemmaId, const char * desiredRoomName ) :
 server( LISTEN_PORT )
@@ -54,7 +54,7 @@ void Lemma::begin()
   testConnection();
   tryConnectingWithMaestro();
   handleIncomingConnections();
-  // testHeartbeat();
+  //testHeartbeat();
 }
 
 void Lemma::hear(char const * name, handler_t callback)
@@ -233,14 +233,14 @@ void Lemma::handleIncomingConnections()
 
   if ( _connectedToHost ) {
     TCPClient incomingClient = server.available();
-    if (incomingClient.sock() != MAX_SOCK_NUM) {
+    int sock = incomingClient.sock();
+    if (sock != MAX_SOCK_NUM) {
       TcpReader reader( incomingClient );
       char* message = reader.read();
       // Release the incoming client
-      incomingClient.stop();
-      if (message) {
-        // Serial.print("RECEIVED: ");
-        // Serial.println(message);
+      int res = incomingClient.stop();
+      Serial.print(res);
+      if (message) {      
         Event const & event = MessageParser::parse( message );
         filter.handle(event);
         memset(message, 0, strlen(message)*sizeof(char));

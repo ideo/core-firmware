@@ -4,7 +4,8 @@
 
 
 TcpReader::TcpReader( TCPClient& client ) :
-    client( client )
+    client( client ),
+    bufferPos( 0 )
 { }
 
 char* TcpReader::read()
@@ -30,8 +31,31 @@ char* TcpReader::readPayload( int length )
   {
     return 0;
   }
-  readBlocked( payload, length );
+  memcpy(&buffer[0], payload, bufferPos);
+  memset(buffer, 0, TCPREADER_EXTRA_BUFFER_LEN);
+  readBlocked( &payload[bufferPos], length - bufferPos );
   payload[ length ] = 0;
+
+  // Check if anything extra is on the end of this message
+  String messageString(payload);
+  int closingBrace = messageString.lastIndexOf(']');
+  int numCharsToBuffer = strlen(payload) - (closingBrace + 1);
+  if(closingBrace < 0){
+    return 0;
+  } else if(numCharsToBuffer > 0){
+    memcpy(&payload[closingBrace+1], &buffer[0], numCharsToBuffer);
+    bufferPos = numCharsToBuffer;
+  } else {
+    bufferPos = 0;
+  }
+
+  // Make sure the beginning is correct
+  if(payload[0] != '['){
+    return 0;
+  }
+
+  
+  Serial.println(payload);
 
   return payload;
 }
@@ -40,14 +64,16 @@ void TcpReader::readBlocked( char* destination, int length )
 {
   int bytesRead = 0;
   int readResult = 0;
-  while( bytesRead != length )
+  int maxTries = 3;
+  int numTries = 0;
+  while( bytesRead != length && numTries++ < maxTries)
   {
     readResult = client.read( (uint8_t*) destination + bytesRead, length - bytesRead );
     if(readResult < 0){
-      if(!client.available()){
+      if(client.available() <= 0){
         // The client.available() is responsible for fetching the amount left on buffer
         // Without this call the read will return 0 waiting for more causing this to hang.
-        break;
+        delay(5);
       }
     } else {
       bytesRead += readResult;

@@ -18,6 +18,12 @@ unsigned int stepCount1 = 0;
 
 const int dir1Pin = 0;
 const int step1Pin = 1;
+const int ledPin = D7;
+const int ledWaitTime = 100;
+
+int sendNum = 0;
+
+int timeUntilLEDOff = 0;
 
 bool jogMode1 = true;
 
@@ -55,6 +61,9 @@ void move1Handler(Event const & e){
     digitalWrite(dir1Pin , HIGH);
   }
   stepCount1 = abs(e.longValue);
+  digitalWrite(ledPin, 1);
+  timeUntilLEDOff = ledWaitTime;
+  lemma.sendEvent("Fired", sendNum++);
 }
 
 void setSpeed1Handler(Event const & e){
@@ -70,6 +79,8 @@ void setSpeed1Handler(Event const & e){
   #if SERIAL_DEBUG
   Serial.print("half period us: "); Serial.println(halfPeriod);
   #endif
+  digitalWrite(ledPin, 1);
+  timeUntilLEDOff = ledWaitTime;
 }
 void stopMotor1Handler(Event const & e){
   #if SERIAL_DEBUG
@@ -77,12 +88,15 @@ void stopMotor1Handler(Event const & e){
   #endif   
   jogMode1 = true;
   stepCount1 = 0;
+  digitalWrite(ledPin, 1);
+  timeUntilLEDOff = ledWaitTime;
 }
 
 void setup()
 {
 pinMode(step1Pin , OUTPUT);
 pinMode(dir1Pin , OUTPUT);
+pinMode(ledPin, OUTPUT);
 #if SERIAL_DEBUG
   Serial.begin(9600);
   delay(50);  
@@ -102,12 +116,18 @@ pinMode(dir1Pin , OUTPUT);
 }
 
 void loop()
-{    
+{
   //NOAM:
   if( millis() - lemmaTimer > 25 ){
+    lemmaTimer = millis();
     lemma.run();
-    lemmaTimer = millis();   
   } 
+
+  if(timeUntilLEDOff-- > 0){
+    if(timeUntilLEDOff == 0){
+      digitalWrite(ledPin, 0);
+    }
+  }
 
 
   //Stepper 1 Handling

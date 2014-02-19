@@ -28,7 +28,7 @@
 
 #include "spark_wiring.h"
 
-#define TCPCLIENT_BUF_MAX_SIZE	16
+#define TCPCLIENT_BUF_MAX_SIZE	128
 
 class TCPClient : public Stream {
 
@@ -46,7 +46,7 @@ public:
 	virtual int read(uint8_t *buffer, size_t size);
 	virtual int peek();
 	virtual void flush();
-	virtual void stop();
+	virtual int stop();
 	virtual bool connected();
 	virtual operator bool();
 	virtual long sock() { return _sock; };

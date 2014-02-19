@@ -15,6 +15,7 @@ const int range3Pin = A2;
 Lemma lemma(PART_ID, ROOM_ID);
 
 void setup(){
+  pinMode(D7, OUTPUT);
 #if SERIAL_DEBUG
   //Serial.begin(9600);
   delay(50);
@@ -23,6 +24,7 @@ void setup(){
   delay(5);  
   //  NOAM: 
   lemma.begin();
+  digitalWrite(D7, 1);
 }
 
 void loop(){  

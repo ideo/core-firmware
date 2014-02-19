@@ -227,19 +227,21 @@ void TCPClient::flush()
 	}
 }
 
-void TCPClient::stop()
+int TCPClient::stop()
 {
 	if((WLAN_DHCP != 1) || (_sock == MAX_SOCK_NUM))
 	{
-		return;
+		return 1;
 	}
 
 	//Delay 100ms to prevent CC3000 freeze
-	// delay(100);
+	delay(100);
 
-	closesocket(_sock);
+	int result = closesocket(_sock);
 
 	_sock = MAX_SOCK_NUM;
+
+	return result;
 }
 
 bool TCPClient::connected()
