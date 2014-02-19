@@ -113,7 +113,7 @@ bool MessageSender::sendEvent( char const * name, void * array, int size, int el
 }
 
 bool MessageSender::sendMessage( char const * message )
-{  
+{
   bool result = false;
   if( outboundClient.connected() )
   {

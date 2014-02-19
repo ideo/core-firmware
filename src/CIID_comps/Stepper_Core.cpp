@@ -1,8 +1,6 @@
 #define PART_NAME "Stepper_Core_"
-#define PART_NUM "1"
 #define PART_ID PART_NAME PART_NUM
 #define TIMER_INTERVAL 1000
-#define SERIAL_DEBUG true
 
 /*
 Noam stuff: search "NOAM:" for places to fill in Noam functionality.

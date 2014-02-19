@@ -192,34 +192,12 @@ int TCPClient::read(uint8_t *buffer, size_t size)
 	{
 		if (_remaining <= size)
 		{
-<<<<<<< Updated upstream
 			memcpy(buffer, &_buffer[_offset], _remaining);
-=======
-			Serial.print("(");
-			Serial.print(_remaining);
-			Serial.print("<");
-			Serial.print(size);
-			Serial.print("@");
-			Serial.print(_offset);
-			Serial.print("),");
-			memcpy(buffer, _buffer + _offset, _remaining);
->>>>>>> Stashed changes
 			_offset = _remaining;
 		}
 		else
 		{
-<<<<<<< Updated upstream
 			memcpy(buffer, &_buffer[_offset], size);
-=======
-			Serial.print("(");
-			Serial.print(_remaining);
-			Serial.print("=");
-			Serial.print(size);
-			Serial.print("@");
-			Serial.print(_offset);
-			Serial.print("),");
-			memcpy(buffer, _buffer + _offset, size);
->>>>>>> Stashed changes
 			_offset = size;
 		}
 
@@ -259,7 +237,7 @@ void TCPClient::stop()
 	}
 
 	//Delay 100ms to prevent CC3000 freeze
-	// delay(100);
+	delay(10);
 
 	closesocket(_sock);
 
@@ -275,11 +253,7 @@ bool TCPClient::connected()
 
 	//wlan_sockets[] set using HCI_EVNT_BSD_TCP_CLOSE_WAIT Async event in spark_wlan.cpp
 	if ((!available()) && (wlan_sockets[_sock] == true))
-<<<<<<< Updated upstream
 	{
-=======
-	{		
->>>>>>> Stashed changes
 		wlan_sockets[_sock] = false;
 		stop();
 		return false;

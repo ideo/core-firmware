@@ -1,0 +1,65 @@
+#define PART_NAME "Range_Core_"
+#define PART_ID PART_NAME PART_NUM
+#define DATA_RATE 100
+
+
+
+/*
+Noam stuff: search "NOAM:" for places to fill in Noam functionality.
+ */
+unsigned long dataTimer = millis();
+
+const int range1Pin = A0;
+const int range2Pin = A1;
+const int range3Pin = A2;
+const int debugPin = D7;
+
+int maxTries = 3;
+int currentLEDState = 0;
+
+//Noam:
+Lemma lemma(PART_ID, ROOM_ID);
+
+void setup(){
+#if SERIAL_DEBUG
+  //Serial.begin(9600);
+  delay(50);
+  //Serial.println("Serial initialized.");
+#endif
+  delay(5);  
+  //  NOAM: 
+  lemma.begin();
+  pinMode(debugPin, OUTPUT);
+  digitalWrite(debugPin, currentLEDState);
+}
+
+int readPin(const char* name, const int analogPin){
+  int _value = analogRead( analogPin );
+  int numTries = 0;
+  while(!lemma.sendEvent( name , _value ) && ++numTries < maxTries){
+    delay(1);
+  }
+  if(numTries < 3){
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+void loop(){  
+  //NOAM: 
+  lemma.run();
+  if( millis() - dataTimer > DATA_RATE ){
+    dataTimer = millis();
+
+    int numSuccessfulMessages = 0;
+    numSuccessfulMessages += readPin("Range1_" PART_NUM, range1Pin);
+    numSuccessfulMessages += readPin("Range2_" PART_NUM, range2Pin);
+    numSuccessfulMessages += readPin("Range3_" PART_NUM, range3Pin);
+    if(numSuccessfulMessages == 3){
+      currentLEDState = 1 - currentLEDState;
+      digitalWrite(debugPin, currentLEDState);
+    }
+  }
+}
+

@@ -11,8 +11,7 @@ char* TcpReader::read()
 {
   int length = readPayloadLength();
 
-  char ret[length];
-  readPayload( length, ret );
+  char* ret = readPayload( length );
 
   Serial.print("(");
   Serial.print(length);
@@ -65,9 +64,9 @@ int TcpReader::readPayloadLength()
   return length;
 }
 
-char* TcpReader::readPayload( int length, char* payload)
+char* TcpReader::readPayload( int length)
 {
-  //char* payload = (char*) malloc( length + 1 );
+  char* payload = (char*) malloc( length + 1 );
   if ( payload == 0 )
   {
     return 0;

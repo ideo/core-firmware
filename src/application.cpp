@@ -11,6 +11,8 @@
 
  */
 #define ROOM_ID "chomskynet"
+#define SERIAL_DEBUG true
+#define PART_NUM "1"
 
 #include "application.h"
 
@@ -20,4 +22,5 @@
  // #include "CIID_Comps/BlinkM_Core.cpp"
  // #include "CIID_Comps/TempHumidity_Core.cpp"
  // #include "CIID_Comps/PhotoItr_Core.cpp"
- #include "CIID_Comps/Stepper_Core.cpp"
+ // #include "CIID_Comps/Stepper_Core.cpp"
+ #include "CIID_Comps/Range_Core.cpp"

@@ -15,7 +15,7 @@ public:
 
 private:
   int readPayloadLength();
-  char* readPayload( int length, char* message );
+  char* readPayload( int length );
   void readBlocked( char* destination, int length );
 };
 
