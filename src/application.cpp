@@ -10,7 +10,9 @@
  Author: Evan Shapiro [ IDEO ]
 
  */
-#define ROOM_ID "evan test room"
+
+// Default to free-agent!
+#define ROOM_ID ""
 #define SERIAL_DEBUG true
 #define PART_NUM "1"
  
