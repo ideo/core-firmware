@@ -18,104 +18,81 @@ static void BlinkM_setRGB(byte addr, byte red, byte grn, byte blu);
 
 //NOAM:
 void commandHandler(const Event & e){
-  #if SERIAL_DEBUG
-  // Serial.print("Noam topic received: "); Serial.println(e.name);
-  // Serial.print("command data: "); Serial.println(e.stringValue);
   receivedCount++;
-  Serial.print("Received: "); Serial.println(receivedCount);
-  #endif
- for(byte i=0; i<8; i++){
-   serInStr[i] = e.stringValue[i];
- }
- parseCommand();
+  DEBUG_LED_ON(40);
+  DEBUG("Received: ");
+  DEBUGLN(receivedCount);
+  for(byte i=0; i<8; i++){
+    serInStr[i] = e.stringValue[i];
+  }
+  parseCommand();
 }
 
-void setup(){  
-#if SERIAL_DEBUG
-  Serial.begin(9600);
+void setup(){
+  DEBUG_LED_CONFIG();
+  DEBUG_BEGIN();
   delay(50);
   scan();
-  Serial.println("Serial initialized.");
-#endif
+  DEBUGLN("Serial initialized.");
 
   Wire.begin();
 
-  //  NOAM: 
-  #define hearString "colorCommand_" PART_NUM  
-  lemma.hear( hearString , commandHandler );
+  //  NOAM:
+  lemma.hear( "colorCommand_" PART_NUM , commandHandler );
   lemma.begin();
+
+  DEBUG_LED_ITER();
 }
 
 void loop(){  
   //NOAM:   
   lemma.run();
-#if SERIAL_DEBUG
+  #if SERIAL_DEBUG
   if( readSerialString() > 0){
     parseCommand();
   }
-#endif
+  #endif
+  DEBUG_LED_ITER()
 }
 
 void parseCommand(){
-#if SERIAL_DEBUG
-  Serial.print("> ");
-  Serial.println(serInStr);
-#endif
+  DEBUG("> ");
+  DEBUGLN(serInStr);
   if( serInStr[0] == 's' ){
     scan();
-  }
-  else{
+  } else{
     //ADDRESS PARSE
     char addrStr[2] = {
       serInStr[0] , serInStr[1]
     };
     int _addr = atoi( addrStr );
     if( _addr == 0){
-#if SERIAL_DEBUG
-      Serial.println("invalid address");
-#endif
+      DEBUGLN("invalid address");
       return;
     }
 
     //RED PARSE
     int _red = toHex( serInStr[2] , serInStr[3] );
     if( _red == -1){
-#if SERIAL_DEBUG
-      Serial.println("invalid red");
-#endif
+      DEBUGLN("invalid red");
       return;
     }
 
     //GREEN PARSE
     int _green = toHex( serInStr[4] , serInStr[5] );
     if( _green == -1){
-#if SERIAL_DEBUG
-      Serial.println("invalid green");
-#endif
+      DEBUGLN("invalid green");
       return;
     }
 
     //BLUE PARSE
     int _blue = toHex( serInStr[6] , serInStr[7] );
     if( _blue == -1){
-#if SERIAL_DEBUG
-      Serial.println("invalid blue");
-#endif
+      DEBUGLN("invalid blue");
       return;
     }
-
+    DEBUG_LED_ON(200);
     BlinkM_setRGB(_addr, _red, _green, _blue);
-
-#if SERIAL_DEBUG    
-    // Serial.print("addr: "); 
-    // Serial.println(_addr);
-    // Serial.print("red: "); 
-    // Serial.println(_red);
-    // Serial.print("green: "); 
-    // Serial.println(_green);
-    // Serial.print("blue: "); 
-    // Serial.println(_blue);    
-#endif
   }
   serInStr[0] = 0;
   serInStr[1] = 0; 

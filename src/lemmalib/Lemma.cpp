@@ -6,7 +6,7 @@
 #include "TcpReader.h"
 #include "nJSON.h"
 
-#define HEARTBEAT_PERIOD 24950
+#define HEARTBEAT_PERIOD 14950
 
 Lemma::Lemma( const char * lemmaId, const char * desiredRoomName ) :
 server( LISTEN_PORT )
@@ -52,7 +52,7 @@ void Lemma::begin()
  {
   /* both are actually periodic polls, instead of callbacks */
   testConnection();
-  tryConnectingWithMaestro();
+  tryConnectingWithMaestro(); 
   handleIncomingConnections();
   //testHeartbeat();
 }
