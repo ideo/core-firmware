@@ -6,7 +6,7 @@
  * @date    13-March-2013
  *
  * Updated: 14-Feb-2014 David Sidrane <david_s5@usa.net>
- * @brief   
+ * @brief
  ******************************************************************************
   Copyright (c) 2013 Spark Labs, Inc.  All rights reserved.
 
@@ -472,6 +472,7 @@ void Spark_Protocol_Init(void)
 
 int Spark_Handshake(void)
 {
+  return 0;
   Spark_Protocol_Init();
   spark_protocol.reset_updating();
   int err = spark_protocol.handshake();
@@ -483,11 +484,12 @@ int Spark_Handshake(void)
 //         false on error, meaning we're probably disconnected
 bool Spark_Communication_Loop(void)
 {
-  return spark_protocol.event_loop();
+  return true; //return spark_protocol.event_loop();
 }
 
 void Multicast_Presence_Announcement(void)
 {
+  return;
   long multicast_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   if (0 > multicast_socket)
     return;
@@ -602,6 +604,7 @@ int Internet_Test(void)
 
 int Spark_Connect(void)
 {
+  return 1;
   DEBUG("sparkSocket Now =%d",sparkSocket);
 
   // Close Original
@@ -639,6 +642,7 @@ int Spark_Connect(void)
 
 int Spark_Disconnect(void)
 {
+  return 0;
   int retVal= 0;
   DEBUG("");
   if (sparkSocket >= 0)
