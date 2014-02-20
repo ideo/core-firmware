@@ -41,6 +41,7 @@ char* TcpReader::readPayload( int length )
   int closingBrace = messageString.lastIndexOf(']');
   int numCharsToBuffer = strlen(payload) - (closingBrace + 1);
   if(closingBrace < 0){
+    free(payload);
     return 0;
   } else if(numCharsToBuffer > 0){
     memcpy(&payload[closingBrace+1], &buffer[0], numCharsToBuffer);
@@ -51,12 +52,11 @@ char* TcpReader::readPayload( int length )
 
   // Make sure the beginning is correct
   if(payload[0] != '['){
+    free(payload);
     return 0;
   }
 
-  
   Serial.println(payload);
-
   return payload;
 }
 
@@ -73,7 +73,7 @@ void TcpReader::readBlocked( char* destination, int length )
       if(client.available() <= 0){
         // The client.available() is responsible for fetching the amount left on buffer
         // Without this call the read will return 0 waiting for more causing this to hang.
-        delay(5);
+        delay(1);
       }
     } else {
       bytesRead += readResult;
