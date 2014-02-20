@@ -11,18 +11,28 @@
 
  */
 
+int debugLEDTimer = 0;
+
+#define DEBUG_BEGIN() if(SERIAL_DEBUG){ Serial.begin(9600); }
+#define DEBUG(val) Serial.print(val);
+#define DEBUGLN(val) Serial.println(val);
+
+#define DEBUG_LED_CONFIG() pinMode(D7, OUTPUT);
+#define DEBUG_LED_ON(val) debugLEDTimer = val; digitalWrite(D7, 1);
+#define DEBUG_LED_ITER() if(debugLEDTimer > 0 && --debugLEDTimer == 0){ digitalWrite(D7, 0); }
+
 // Default to free-agent!
 #define ROOM_ID ""
 #define SERIAL_DEBUG true
-#define PART_NUM "10"
+#define PART_NUM "2"
  
 #include "application.h"
 
 //switch comment below application to select Core Component source
 
  // #include "CIID_Comps/Buttons_Core.cpp"
- // #include "CIID_Comps/BlinkM_Core.cpp"
+ #include "CIID_Comps/BlinkM_Core.cpp"
  // #include "CIID_Comps/TempHumidity_Core.cpp"
  // #include "CIID_Comps/PhotoItr_Core.cpp"
- #include "CIID_Comps/Stepper_Core.cpp"
+ // #include "CIID_Comps/Stepper_Core.cpp"
  // #include "CIID_Comps/Range_Core.cpp"
