@@ -104,7 +104,7 @@ pinMode(dir1Pin , OUTPUT);
 void loop()
 {    
   //NOAM:
-  if( millis() - lemmaTimer > 25 ){
+  if( millis() - lemmaTimer > 25 ){    
     lemma.run();
     lemmaTimer = millis();   
   } 

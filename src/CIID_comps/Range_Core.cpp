@@ -1,6 +1,6 @@
 #define PART_NAME "Range_Core_"
 #define PART_ID PART_NAME PART_NUM
-#define DATA_RATE 1000
+#define DATA_RATE 200
 
 /*
 Noam stuff: search "NOAM:" for places to fill in Noam functionality.
@@ -16,9 +16,9 @@ Lemma lemma(PART_ID, ROOM_ID);
 
 void setup(){
 #if SERIAL_DEBUG
-  //Serial.begin(9600);
+  Serial.begin(9600);
   delay(50);
-  //Serial.println("Serial initialized.");
+  Serial.println("Serial initialized.");
 #endif
   delay(5);  
   //  NOAM: 
@@ -36,27 +36,27 @@ void loop(){
     lemma.sendEvent( TOPIC_ID , _value );
     delay(5);
     #if SERIAL_DEBUG
-    //Serial.print(TOPIC_ID);
-    //Serial.print(": ");Serial.println(_value);
+    Serial.print(TOPIC_ID);
+    Serial.print(": ");Serial.println(_value);
 #endif
 
-    #define TOPIC_ID "Range2_" PART_NUM
-    _value = analogRead( range2Pin );
-    lemma.sendEvent( TOPIC_ID , _value );
-    delay(5);
-    #if SERIAL_DEBUG
-    //Serial.print(TOPIC_ID);
-    //Serial.print(": ");Serial.println(_value);
-#endif
+//     #define TOPIC_ID "Range2_" PART_NUM
+//     _value = analogRead( range2Pin );
+//     lemma.sendEvent( TOPIC_ID , _value );
+//     delay(5);
+//     #if SERIAL_DEBUG
+//     Serial.print(TOPIC_ID);
+//     Serial.print(": ");Serial.println(_value);
+// #endif
 
-    #define TOPIC_ID "Range3_" PART_NUM
-    _value = analogRead( range3Pin );
-    lemma.sendEvent( TOPIC_ID , _value );
-    delay(5);
-    #if SERIAL_DEBUG
-    //Serial.print(TOPIC_ID);
-    //Serial.print(": ");Serial.println(_value);
-#endif
+//     #define TOPIC_ID "Range3_" PART_NUM
+//     _value = analogRead( range3Pin );
+//     lemma.sendEvent( TOPIC_ID , _value );
+//     delay(5);
+//     #if SERIAL_DEBUG
+//     Serial.print(TOPIC_ID);
+//     Serial.print(": ");Serial.println(_value);
+// #endif
   }
 }
 

@@ -54,7 +54,7 @@ void Lemma::begin()
   testConnection();
   tryConnectingWithMaestro();
   handleIncomingConnections();
-  // testHeartbeat();
+  testHeartbeat();
 }
 
 void Lemma::hear(char const * name, handler_t callback)

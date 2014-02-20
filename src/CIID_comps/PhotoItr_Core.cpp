@@ -122,16 +122,16 @@ void setup(){
   sendItr3();
   sendItr4();
 
-#define hearString "Itr1State_" PART_NUM
+#define hearString "Itr1Poke_" PART_NUM
   //  NOAM: 
      lemma.hear( hearString , pokeItr1Handler );
-#define hearString "Itr2State_" PART_NUM
+#define hearString "Itr2Poke_" PART_NUM
   //  NOAM: 
      lemma.hear( hearString , pokeItr2Handler );
-#define hearString "Itr3State_" PART_NUM
+#define hearString "Itr3Poke_" PART_NUM
   //  NOAM: 
      lemma.hear( hearString , pokeItr3Handler );
-#define hearString "Itr4State_" PART_NUM
+#define hearString "Itr4Poke_" PART_NUM
   //  NOAM: 
      lemma.hear( hearString , pokeItr4Handler );
 
