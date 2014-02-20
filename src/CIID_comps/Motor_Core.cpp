@@ -10,86 +10,40 @@ Noam stuff: search "NOAM:" for places to fill in Noam functionality.
 Lemma lemma(PART_ID, ROOM_ID);
 
 const int mot1Pin = A0;
-const int step1Pin = 1;
+const int mot2Pin = A1;
+const int mot3Pin = A4;
+const int mot4Pin = A5;
 
-bool jogMode1 = true;
-
-bool step1State = false;
-
-bool stepper1WasMoving = false;
-// bool stepper2WasMoving = false;
-unsigned long step1PosTimer = millis();
-// unsigned long step2PosTimer = millis();
-
-// NOAM:
-
-void handleSteps( 
-  unsigned long stepTimer, unsigned int stepHalfDuration, 
-  long stepCount, const int stepPin, bool stepState, bool jogMode 
-  ){
-  if( jogMode1 && (stepCount1 <= 0) ) return;
-  if( micros() - stepTimer1 > stepHalfDuration1 ){
-    stepTimer1 = micros();
-    step1State = !step1State;
-    digitalWrite(step1Pin , step1State);
-    if(step1State && jogMode1) stepCount1--;
-  }
-}
-//Motor 1 handlers
-void move1Handler(Event const & e){
-  #if SERIAL_DEBUG
-  Serial.print(e.name);Serial.print("  "); Serial.println(e.longValue);
-  #endif
-  jogMode1 = true;  
-  if( e.longValue < 0 ){
-    digitalWrite(dir1Pin , LOW);  
-  }
-  else{
-    digitalWrite(dir1Pin , HIGH);
-  }
-  stepCount1 = abs(e.longValue);
-}
-
-void setSpeed1Handler(Event const & e){
-#if SERIAL_DEBUG
-  Serial.print(e.name);Serial.print("  "); Serial.println(e.floatValue);
-  #endif  
-  double halfPeriod = (double)e.floatValue;
-  halfPeriod = 1/halfPeriod;
-  halfPeriod = 500000 * halfPeriod;
-  halfPeriod = (long)halfPeriod;
-  halfPeriod = abs(halfPeriod);
-  stepHalfDuration1 = halfPeriod;
-  #if SERIAL_DEBUG
-  Serial.print("half period us: "); Serial.println(halfPeriod);
-  #endif
-}
-void stopMotor1Handler(Event const & e){
-  #if SERIAL_DEBUG
-  Serial.println(e.name);
-  #endif   
-  jogMode1 = true;
-  stepCount1 = 0;
-}
+void mot1Handler(Event const & e);
+void mot2Handler(Event const & e);
+void mot3Handler(Event const & e);
+void mot4Handler(Event const & e);
 
 void setup()
 {
-pinMode(step1Pin , OUTPUT);
-pinMode(dir1Pin , OUTPUT);
+pinMode(mot1Pin , OUTPUT);
+pinMode(mot2Pin , OUTPUT);
+pinMode(mot3Pin , OUTPUT);
+pinMode(mot4Pin , OUTPUT);
+pinMode(D0 , OUTPUT);
+digitalWrite(D0,HIGH);
+
 #if SERIAL_DEBUG
   Serial.begin(9600);
   delay(50);  
   Serial.println("Serial initialized.");
 #endif
   //  NOAM:   
-
+  analogWrite( mot1Pin , 0);
   //Motor 1 listeners
-#define HEAR_STRING "move1_" PART_NUM
-  lemma.hear( HEAR_STRING , move1Handler );
-#define HEAR_STRING "setSpeed1_" PART_NUM
-  lemma.hear( HEAR_STRING , setSpeed1Handler );
-#define HEAR_STRING "stopMotor1_" PART_NUM
-  lemma.hear( HEAR_STRING , stopMotor1Handler );
+#define HEAR_STRING "mot1_" PART_NUM
+  lemma.hear( HEAR_STRING , mot1Handler );
+#define HEAR_STRING "mot2_" PART_NUM
+  lemma.hear( HEAR_STRING , mot2Handler );
+#define HEAR_STRING "mot3_" PART_NUM
+  lemma.hear( HEAR_STRING , mot3Handler );
+#define HEAR_STRING "mot4_" PART_NUM
+  lemma.hear( HEAR_STRING , mot4Handler );
 
   lemma.begin();
 }
@@ -97,14 +51,53 @@ pinMode(dir1Pin , OUTPUT);
 void loop()
 {    
   //NOAM:
-  if( millis() - lemmaTimer > 25 ){    
-    lemma.run();
-    lemmaTimer = millis();   
-  } 
-
-
-  //Stepper 1 Handling
- // if( jogMode1 ){
-  handleSteps( stepTimer1, stepHalfDuration1, stepCount1, step1Pin, step1State, jogMode1 );
+  lemma.run();
 }
 
+//Motor 1 handlers
+void mot1Handler(Event const & e){
+  #if SERIAL_DEBUG
+  Serial.print(e.name);Serial.print("  "); Serial.println(e.intValue);
+  #endif
+  byte pwmVal = 0;
+  if( e.intValue > 255 ) pwmVal = 255;
+  else if( e.intValue < 0 ) pwmVal = 0;
+  else pwmVal = e.intValue;
+  analogWrite( mot1Pin , pwmVal );
+}
+
+//Motor 2 handlers
+void mot2Handler(Event const & e){
+  #if SERIAL_DEBUG
+  Serial.print(e.name);Serial.print("  "); Serial.println(e.intValue);
+  #endif
+  byte pwmVal = 0;
+  if( e.intValue > 255 ) pwmVal = 255;
+  else if( e.intValue < 0 ) pwmVal = 0;
+  else pwmVal = e.intValue;
+  analogWrite( mot2Pin , pwmVal );
+}
+
+//Motor 3 handlers
+void mot3Handler(Event const & e){
+  #if SERIAL_DEBUG
+  Serial.print(e.name);Serial.print("  "); Serial.println(e.intValue);
+  #endif
+  byte pwmVal = 0;
+  if( e.intValue > 255 ) pwmVal = 255;
+  else if( e.intValue < 0 ) pwmVal = 0;
+  else pwmVal = e.intValue;
+  analogWrite( mot3Pin , pwmVal );
+}
+
+//Motor 4 handlers
+void mot4Handler(Event const & e){
+  #if SERIAL_DEBUG
+  Serial.print(e.name);Serial.print("  "); Serial.println(e.intValue);
+  #endif
+  byte pwmVal = 0;
+  if( e.intValue > 255 ) pwmVal = 255;
+  else if( e.intValue < 0 ) pwmVal = 0;
+  else pwmVal = e.intValue;
+  analogWrite( mot4Pin , pwmVal );
+}
