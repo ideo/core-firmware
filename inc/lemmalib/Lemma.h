@@ -18,15 +18,16 @@ class Lemma
     void begin( );
     void run();
     void hear( char const * name, handler_t callback );
-    void sendEvent( char const * name, char const * value );
-    void sendEvent( char const * name, int value );
-    void sendEvent( char const * name, unsigned long value );
-    void sendEvent( char const * name, long value );
-    void sendEvent( char const * name, double value );
-    void sendEvent( char const * name, bool value );
-    void sendIntArray( char const * name, int * array, int size );
-    void sendDoubleArray( char const * name, double * array, int size );
-    void sendStringArray( char const * name, char ** array, int size );
+    bool sendEvent( char const * name, char const * value );
+    bool sendEvent( char const * name, int value );
+    bool sendEvent( char const * name, unsigned long value );
+    bool sendEvent( char const * name, long value );
+    bool sendEvent( char const * name, double value );
+    bool sendEvent( char const * name, bool value );
+    bool sendIntArray( char const * name, int * array, int size );
+    bool sendDoubleArray( char const * name, double * array, int size );
+    bool sendStringArray( char const * name, char ** array, int size );
+    bool isConnected();
 
   private:
     void displayIP();

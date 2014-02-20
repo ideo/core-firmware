@@ -47,6 +47,7 @@ void setup(){
 void loop(){  
   //NOAM:   
   lemma.run();
+  //displayLemmaConnected(&lemma);
   #if SERIAL_DEBUG
   if( readSerialString() > 0){
     parseCommand();

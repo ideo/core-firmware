@@ -282,7 +282,7 @@ char * MessageBuilder::buildRegister( int port, char const** hears, int hearsSiz
   }
   strcat(buf, "], ");
 
-  strcat(buf, "\"arduino\", ");
+  strcat(buf, "\"spark\", ");
   strcat(buf, "\"0.2\"]");
 
   /* [TODO] memory management */

@@ -29,12 +29,9 @@ Bounce button10( button10Pin , DEBOUNCE );
 Lemma lemma(PART_ID, ROOM_ID);
 
 void setup(){
-  #if SERIAL_DEBUG
-  Serial.begin(9600);
-  delay(25);
-  Serial.println("serial initialized");
-#endif
-
+  DEBUG_BEGIN();
+  DEBUG_LED_CONFIG();
+  
   pinMode( button1Pin , INPUT_PULLUP );
   pinMode( button2Pin , INPUT_PULLUP );
   pinMode( button3Pin , INPUT_PULLUP );
@@ -50,8 +47,31 @@ void setup(){
   lemma.begin();  
 }
 
-void loop(){  
-  
+void sendButtonEvent(const char* topic_pressed, const char * topic_released, Bounce button){
+  if(button.fallingEdge()){
+    DEBUGLN(topic_pressed)
+    DEBUG_LED_ON(100);
+    //NOAM:
+    int numTry = 0;
+    while(!lemma.sendEvent( topic_pressed , true ) && numTry++ < 3){
+      delay(1);
+    }
+  }
+
+  if(button.risingEdge()){
+    DEBUGLN(topic_released);
+    DEBUG_LED_ON(100);
+    //NOAM:
+    int numTry = 0;
+    while(!lemma.sendEvent( topic_released , true ) && numTry++ < 3){
+      delay(1);
+    }
+  }
+}
+
+void loop(){
+  DEBUG_LED_ITER();
+
   //NOAM: 
   lemma.run();
   //
@@ -67,203 +87,15 @@ void loop(){
   button9.update();
   button10.update();
 
-  //Button 1 handling
-  if(button1.fallingEdge()){
-#define TOPIC_ID "B1Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  if(button1.risingEdge()){
-#define TOPIC_ID "B1Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
+  sendButtonEvent("B1Pressed_" PART_NUM, "B1Released_" PART_NUM, button1);
+  sendButtonEvent("B2Pressed_" PART_NUM, "B2Released_" PART_NUM, button2);
+  sendButtonEvent("B3Pressed_" PART_NUM, "B3Released_" PART_NUM, button3);
+  sendButtonEvent("B4Pressed_" PART_NUM, "B4Released_" PART_NUM, button4);
+  sendButtonEvent("B5Pressed_" PART_NUM, "B5Released_" PART_NUM, button5);
+  sendButtonEvent("B6Pressed_" PART_NUM, "B6Released_" PART_NUM, button6);
+  sendButtonEvent("B7Pressed_" PART_NUM, "B7Released_" PART_NUM, button7);
+  sendButtonEvent("B8Pressed_" PART_NUM, "B8Released_" PART_NUM, button8);
+  sendButtonEvent("B9Pressed_" PART_NUM, "B9Released_" PART_NUM, button9);
+  sendButtonEvent("B10Pressed_" PART_NUM, "B10Released_" PART_NUM, button10);
   
-    //Button 2 handling
-  if(button2.fallingEdge()){
-#define TOPIC_ID "B2Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  if(button2.risingEdge()){
-#define TOPIC_ID "B2Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );   
-    //    
-  }
-  
-    //Button 3 handling
-  if(button3.fallingEdge()){
-#define TOPIC_ID "B3Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  if(button3.risingEdge()){
-#define TOPIC_ID "B3Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  
-    //Button 4 handling
-  if(button4.fallingEdge()){
-#define TOPIC_ID "B4Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  if(button4.risingEdge()){
-#define TOPIC_ID "B4Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  
-    //Button 5 handling
-  if(button5.fallingEdge()){
-#define TOPIC_ID "B5Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  if(button5.risingEdge()){
-#define TOPIC_ID "B5Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  
-    //Button 6 handling
-  if(button6.fallingEdge()){
-#define TOPIC_ID "B6Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  if(button6.risingEdge()){
-#define TOPIC_ID "B6Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  
-    //Button 7 handling
-  if(button7.fallingEdge()){
-#define TOPIC_ID "B7Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  if(button7.risingEdge()){
-#define TOPIC_ID "B7Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  
-    //Button 8 handling
-  if(button8.fallingEdge()){
-#define TOPIC_ID "B8Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //    
-  }
-  if(button8.risingEdge()){
-#define TOPIC_ID "B8Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  
-    //Button 9 handling
-  if(button9.fallingEdge()){
-#define TOPIC_ID "B9Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  if(button9.risingEdge()){
-#define TOPIC_ID "B9Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  
-    //Button 10 handling
-  if(button10.fallingEdge()){
-#define TOPIC_ID "B10Pressed_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true );
-    //
-  }
-  if(button10.risingEdge()){
-#define TOPIC_ID "B10Released_" PART_NUM
-#if SERIAL_DEBUG
-    Serial.println(TOPIC_ID);
-#endif
-    //NOAM:
-    lemma.sendEvent( TOPIC_ID , true ); 
-    //
-  }
 }

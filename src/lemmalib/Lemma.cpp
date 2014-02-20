@@ -54,7 +54,7 @@ void Lemma::begin()
   testConnection();
   tryConnectingWithMaestro(); 
   handleIncomingConnections();
-  //testHeartbeat();
+  testHeartbeat();
 }
 
 void Lemma::hear(char const * name, handler_t callback)
@@ -64,6 +64,10 @@ void Lemma::hear(char const * name, handler_t callback)
 
 void Lemma::testConnection(){
   _connectedToHost = maestroConnection.connected();
+}
+
+bool Lemma::isConnected(){
+  return _connectedToHost;
 }
 
 void Lemma::tryConnectingWithMaestro()
@@ -116,112 +120,130 @@ void Lemma::tryConnectingWithMaestro()
 }
 
 
-void Lemma::sendEvent( char const * name, char const * value )
+bool Lemma::sendEvent( char const * name, char const * value )
 {
   if (false == _connectedToHost) {
-    return;
+    return false;
   }
 
   if (!messageSender.sendEvent( name, value ))
   {
     reset();
+    return false;
   }
+  return true;
 }
 
-void Lemma::sendEvent( char const * name, int value )
+bool Lemma::sendEvent( char const * name, int value )
 {
   if (false == _connectedToHost) {
-    return;
+    return false;
   }
 
   if (!messageSender.sendEvent( name, value ))
   {
     reset();
+    return false;
   }
+  return true;
 }
 
-void Lemma::sendEvent( char const * name, unsigned long value )
+bool Lemma::sendEvent( char const * name, unsigned long value )
 {
   if (false == _connectedToHost) {
-    return;
+    return false;
   }
 
   if (!messageSender.sendEvent( name, value ))
   {
     reset();
+    return false;
   }
+  return true;
 }
 
-void Lemma::sendEvent( char const * name, long value )
+bool Lemma::sendEvent( char const * name, long value )
 {
   if (false == _connectedToHost) {
-    return;
+    return false;
   }
 
   if (!messageSender.sendEvent( name, value ))
   {
     reset();
+    return false;
   }
+  return true;
 }
 
-void Lemma::sendEvent( char const * name, double value )
+bool Lemma::sendEvent( char const * name, double value )
 {
   if (false == _connectedToHost) {
-    return;
+    return false;
   }
 
   if (!messageSender.sendEvent( name, value ))
   {
     reset();
+    return false;
   }
+  return true;
 }
 
-void Lemma::sendEvent( char const * name, bool value )
+bool Lemma::sendEvent( char const * name, bool value )
 {
   if (false == _connectedToHost) {
-    return;
+    return false;
   }
 
   if (!messageSender.sendEvent( name, value ))
   {
     reset();
+    return false;
   }
+  return true;
 }
 
-void Lemma::sendIntArray( char const * name, int * array, int size )
+bool Lemma::sendIntArray( char const * name, int * array, int size )
 {
   if (false == _connectedToHost) {
-    return;
+    return false;
   }
 
   if (!messageSender.sendEvent( name, array, size, nJSON_INT ))
   {
     reset();
+    return false;
   }
+  return true;
 }
 
-void Lemma::sendDoubleArray( char const * name, double * array, int size )
+bool Lemma::sendDoubleArray( char const * name, double * array, int size )
 {
   if (false == _connectedToHost) {
-    return;
+    return false;
   }
 
   if (!messageSender.sendEvent( name, array, size, nJSON_DOUBLE ))
   {
     reset();
+    return false;
   }
+  return true;
 }
 
-void Lemma::sendStringArray( char const * name, char ** array, int size )
+bool Lemma::sendStringArray( char const * name, char ** array, int size )
 {
   if (false == _connectedToHost) {
-    return;
+    return false;
   }
 
   if (!messageSender.sendEvent( name, array, size, nJSON_STRING ))
   {
     reset();
+    return false;
   }
+  return true;
 }
 
 
