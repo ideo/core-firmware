@@ -8,7 +8,8 @@ class MessageBuilder
 
   public:
   MessageBuilder( char const * spallaId );
-  char * buildRegister( int port, char const** hears, int hearsSize, char const** plays, int playsSize ) const;
+  char * buildRegister( int port, char const** hears, int hearsSize, char const** plays, int playsSize, int heartbeat_period_sec = -1 ) const;
+  char * buildHeartbeat() const;
 };
 
 

@@ -11,12 +11,12 @@ MessageSender::MessageSender( const char * spallaId, TCPClient& outboundClient )
   , outboundClient( outboundClient )
 { }
 
-bool MessageSender::sendRegistration( int listenPort, char const ** hears, int hearsCount, char const ** plays, int playsCount )
+bool MessageSender::sendRegistration( int listenPort, char const ** hears, int hearsCount, char const ** plays, int playsCount, int heartbeat_period_sec )
 {
   PRINT_FUNCTION_PREFIX;
   PRINT("send registration on listen port: ");
   PRINTLN(listenPort);
-  char* registrationMessage = messageBuilder.buildRegister( listenPort, hears, hearsCount, plays, playsCount );
+  char* registrationMessage = messageBuilder.buildRegister( listenPort, hears, hearsCount, plays, playsCount, heartbeat_period_sec );
   bool result = sendMessage( registrationMessage );
   free( registrationMessage );
   return result;

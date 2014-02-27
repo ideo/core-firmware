@@ -51,6 +51,7 @@ void Lemma::run()
   /* both are actually periodic polls, instead of callbacks */
   tryConnectingWithMaestro();
   handleIncomingConnections();
+  sendHeartbeat();
 }
 
 void Lemma::hear(char const * name, handler_t callback)
@@ -92,18 +93,18 @@ void Lemma::tryConnectingWithMaestro()
          * array in EventFilter was filled by the Lemma::hear() call when it calls the add() function
          * of EventFilter. The play array is empty, so the last 2 arguments are empty.
          */
-        messageSender.sendRegistration( LISTEN_PORT, filter.events(), filter.count(), 0, 0 );
-      }
-    }
-  }
-}
+         messageSender.sendRegistration( LISTEN_PORT, filter.events(), filter.count(), 0, 0, HEARTBEAT_PERIOD_SECONDS);
+       }
+     }
+   }
+ }
 
 
-void Lemma::reset()
-{
-    PRINT_FUNCTION_PREFIX;
-    Serial.println("reset maestro connection after failed to send event to NOAM server");
-    maestroConnection.stop();
+ void Lemma::reset()
+ {
+  PRINT_FUNCTION_PREFIX;
+  Serial.println("reset maestro connection after failed to send event to NOAM server");
+  maestroConnection.stop();
 }
 
 
@@ -117,6 +118,7 @@ void Lemma::sendEvent( char const * name, char const * value )
   {
     reset();
   }
+  return postSendMessage();
 }
 
 void Lemma::sendEvent( char const * name, int value )
@@ -129,6 +131,7 @@ void Lemma::sendEvent( char const * name, int value )
   {
     reset();
   }
+  return postSendMessage();
 }
 
 void Lemma::sendEvent( char const * name, unsigned long value )
@@ -141,6 +144,7 @@ void Lemma::sendEvent( char const * name, unsigned long value )
   {
     reset();
   }
+  return postSendMessage();
 }
 
 void Lemma::sendEvent( char const * name, double value )
@@ -153,6 +157,7 @@ void Lemma::sendEvent( char const * name, double value )
   {
     reset();
   }
+  return postSendMessage();
 }
 
 void Lemma::sendEvent( char const * name, bool value )
@@ -165,6 +170,7 @@ void Lemma::sendEvent( char const * name, bool value )
   {
     reset();
   }
+  return postSendMessage();
 }
 
 void Lemma::sendIntArray( char const * name, int * array, int size )
@@ -177,6 +183,7 @@ void Lemma::sendIntArray( char const * name, int * array, int size )
   {
     reset();
   }
+  return postSendMessage();
 }
 
 void Lemma::sendDoubleArray( char const * name, double * array, int size )
@@ -189,6 +196,7 @@ void Lemma::sendDoubleArray( char const * name, double * array, int size )
   {
     reset();
   }
+  return postSendMessage();
 }
 
 void Lemma::sendStringArray( char const * name, char ** array, int size )
@@ -201,6 +209,12 @@ void Lemma::sendStringArray( char const * name, char ** array, int size )
   {
     reset();
   }
+  return postSendMessage();
+}
+
+bool Lemma::postSendMessage(){
+  heartbeatTimer = millis();
+  return true;
 }
 
 
@@ -234,21 +248,23 @@ void Lemma::handleIncomingConnections()
   }
   else {
     connected = false;
-  }
+  }  
+}
 
-  // TCPClient incomingClient = server.available();
-  // if( incomingClient == true )
-  // {
-  //   PRINT_FUNCTION_PREFIX;
-  //   Serial.println("incoming data available");
-  //   // TcpReader reader( incomingClient );
-  //   // char* message = reader.read();
-  //   // if (message != 0)
-  //   // {
-  //   //   Event const & event = MessageParser::parse( message );
-  //   //   filter.handle( event );
-  //   //   free( message );
-  //   // }
-  // }
+void Lemma::sendHeartbeat(){
+  if( false == _connectedToHost ){
+    return;
+  }
+  if( millis() - heartbeatTimer > HEARTBEAT_PERIOD_SECONDS * 1000 ){
+    heartbeatTimer = millis();
+    bool result = messageSender.sendHeartbeat();
+    //TODO: remove debug
+    Serial.print("heartbeat: "); Serial.print(millis()); Serial.print(" ok?: "); Serial.println(result);   
+    if( !result ){
+      Serial.println("Lost heartbeat connection to server");
+      _connectedToHost = false;    
+      reset();
+    }
+  }
 }
 

@@ -1,5 +1,6 @@
 #include "DebugUtil.h"
 #include "MessageBuilder.h"
+#include "spark_wiring_string.h"
 #include <nJSON.h>
 
 
@@ -252,7 +253,7 @@ MessageBuilder::MessageBuilder( char const * id) :
 }
 
 
-char * MessageBuilder::buildRegister( int port, char const** hears, int hearsSize, char const** plays, int playsSize ) const
+char * MessageBuilder::buildRegister( int port, char const** hears, int hearsSize, char const** plays, int playsSize, int heartbeat_period_sec) const
 {
   char buf[1024];
   char *string;
@@ -276,9 +277,16 @@ char * MessageBuilder::buildRegister( int port, char const** hears, int hearsSiz
   }
   strcat(buf, "], ");
 
-  strcat(buf, "\"arduino\", ");
-  strcat(buf, "\"0.2\"]");
-
+  strcat(buf, "\"spark\", ");
+  strcat(buf, "\"0.2\"");
+  if(heartbeat_period_sec > 0){
+    strcat(buf, ", {\"heartbeat\":");
+    char heartbeat_str[16];
+    sprintf(heartbeat_str, "%d", heartbeat_period_sec);
+    strcat(buf, heartbeat_str);
+    strcat(buf, "}");
+  }
+  strcat(buf, "]");
   /* [TODO] memory management */
   string = strdup(buf);
 
